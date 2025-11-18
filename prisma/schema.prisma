@@ -1,0 +1,390 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum PaymentMethodTypeEnum {
+  Cash
+  Card
+}
+
+enum OrderStatusEnum {
+  JustOrdered
+  Reviewed
+  OutForDelivery
+  Delivered
+  Canceled
+  Refused
+}
+
+enum UserRoleEnum {
+  admin
+  user
+  deliveryCompany
+}
+
+enum AnimationEnum {
+  Christmas
+  Default
+  Halloween
+  NewYear
+  Ramadan
+  Summer
+  Winter
+}
+
+model Settings {
+  id               Int    @id @default(autoincrement())
+  siteName         String
+  description      String @db.LongText
+  arDescription    String @db.LongText
+  logo             String @db.LongText
+  phoneNumber      String
+  email            String
+  address          String
+  defaultBanner    String @db.LongText
+  defaultAnimation AnimationEnum @default(Default)
+
+  facebook  String? @db.LongText
+  instagram String? @db.LongText
+
+  @@map("settings") 
+}
+
+model User {
+  id          Int    @id @default(autoincrement())
+  name        String
+  password    String
+  phoneNumber String @unique
+  email       String @unique
+
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  role UserRoleEnum @default(user)
+
+  adresses      Address[]
+  orders        Order[]
+  reviews       ProductReview[]
+  companyOrders Order[]         @relation("CompanyOrders")
+
+  createdAt DateTime @default(now()) @db.Timestamp()
+  updatedAt DateTime @default(now()) @db.Timestamp()
+
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("users")
+}
+
+model Address {
+  id Int @id @default(autoincrement())
+
+  cityId    Int
+  countryId Int
+
+  city    City    @relation(fields: [cityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  country Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  streetName  String
+  streetNo    String
+  phoneNumber String
+  notes       String?
+  userId      Int
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orders      Order[]
+
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now()) @db.Timestamp()
+  updatedAt DateTime @default(now()) @db.Timestamp()
+
+  deletedAt DateTime? @db.Timestamp()
+}
+
+model Category {
+  id            Int       @id @default(autoincrement())
+  icon          String    @default("/defaults/icons/category.svg")
+  name          String
+  nameAr        String?
+  description   String? @db.LongText
+  products      Product[]
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("categories")
+}
+
+model Product {
+  id              Int     @id @default(autoincrement())
+  categoryId      Int
+  picture         String  @default("/defaults/product-placeholder.png")
+  name            String
+  description     String? @db.LongText
+  longDescription String? @db.LongText
+  price           Float 
+  offerPrice      Float @default(0)
+  quantity        Int     @default(1) @db.SmallInt
+  slug            String  @unique
+  sku             String  @unique
+
+  category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ordersItems    OrderItem[]
+  giftBoxesItems GiftBoxItem[]
+  reviews        ProductReview[]
+  sizes          ProductSize[]
+  colors         ProductColor[]
+  pictures       ProductPicture[]
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("products")
+}
+
+model ProductPicture {
+  id        Int     @id @default(autoincrement())
+  picture   String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("product_pictures")
+}
+
+model ProductSize {
+  id       Int     @id @default(autoincrement())
+  label    String
+  isCircle Boolean
+  radius   Float?
+  width    Float?
+  height   Float?
+  length   Float?
+
+  price Float @default(0)
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now()) @db.Timestamp()
+  updatedAt DateTime @default(now()) @db.Timestamp()
+
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("product_sizes")
+}
+
+model ProductColor {
+  id        Int     @id @default(autoincrement())
+  color     String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  orderItems OrderItem[]
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("product_colors")
+}
+
+model ProductReview {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  productId Int
+  rate      Int
+  review    String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamp()
+  updatedAt DateTime @default(now()) @db.Timestamp()
+
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("product_reviews")
+}
+
+model Coupon {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  discount Int     @db.SmallInt
+  usages   Int     @db.SmallInt
+  active   Boolean @default(false)
+  orders   Order[]
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("coupons")
+}
+
+model GiftBox {
+  id              Int    @id @default(autoincrement())
+  name            String
+  description     String
+  longDescription String
+  width           Int
+  height          Int
+  length          Int
+  sizeLabel       String
+  price           Int
+  image           String
+
+  orders OrderGiftBox[]
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  items GiftBoxItem[]
+}
+
+model Order {
+  id        Int  @id @default(autoincrement())
+  userId    Int
+  companyId Int?
+  couponId  Int?
+  addressId Int
+
+  paymentMethod PaymentMethodTypeEnum @default(Cash)
+  paymentStatus String                @default("pending") @db.VarChar(255)
+  status        OrderStatusEnum       @default(JustOrdered)
+  statusNumber  Int                   @default(1) @db.SmallInt
+  paymentUrl    String?               @db.LongText
+
+  discountValue Int @default(0) @db.SmallInt
+  deliveryValue Int @default(0) @db.SmallInt
+  subTotal      Int @default(0)
+  total         Int
+
+  orderedAt   DateTime  @default(now()) @db.Timestamp()
+  updatedAt   DateTime  @default(now()) @db.Timestamp()
+  deliveredAt DateTime? @db.Timestamp()
+  deletedAt   DateTime? @db.Timestamp()
+
+  kashierResponse         String? @db.LongText
+  kashierOrderId          String? @db.LongText
+  kashierTxnId            String? @db.LongText
+  kashierPaymentId        String? @db.LongText
+  kashierPaymentStatus    String? @db.LongText
+  merchantOrderId         String? @db.LongText
+  kashierSignature        String? @db.LongText
+
+  address Address @relation(fields: [addressId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  coupon  Coupon? @relation(fields: [couponId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  company User?   @relation("CompanyOrders", fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  giftBoxes OrderGiftBox[]
+  items     OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int @id @default(autoincrement())
+  orderId   Int
+  productId Int
+
+  quantity   Int @default(1) @db.SmallInt
+  unitPrice  Int
+  totalPrice Int
+
+  sizeId Int?
+  colorId Int?
+
+  size  ProductSize? @relation(fields: [sizeId], references: [id])
+  color ProductColor? @relation(fields: [colorId], references: [id])
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("order_items")
+}
+
+model OrderGiftBox {
+  id        Int @id @default(autoincrement())
+  orderId   Int
+  giftBoxId Int
+
+  quantity   Int @default(1) @db.SmallInt
+  unitPrice  Int
+  totalPrice Int
+
+  order   Order         @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  giftBox GiftBox       @relation(fields: [giftBoxId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  items   GiftBoxItem[]
+
+  @@map("order_gift_boxes")
+}
+
+model GiftBoxItem {
+  id             Int     @id @default(autoincrement())
+  orderGiftBoxId Int
+  productId      Int
+  quantity       Int     @default(1) @db.SmallInt
+  color          String?
+  size           String?
+
+  unitPrice  Int
+  totalPrice Int
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  orderGiftBox OrderGiftBox @relation(fields: [orderGiftBoxId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  giftBox      GiftBox?     @relation(fields: [giftBoxId], references: [id])
+  giftBoxId    Int?
+
+  @@map("gift_box_items")
+}
+
+model Country {
+  id       Int     @id @default(autoincrement())
+  name     String
+  code     String
+  isActive Boolean @default(true)
+  price    Int
+
+  cities    City[]
+  users     User[]
+  addresses Address[]
+
+  @@map("coutries")
+}
+
+model City {
+  id       Int     @id @default(autoincrement())
+  name     String
+  code     String
+  isActive Boolean @default(true)
+  price    Int
+
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  addresses Address[]
+  users     User[]
+
+  @@map("cities")
+}
