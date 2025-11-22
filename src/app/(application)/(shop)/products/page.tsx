@@ -1,6 +1,6 @@
 import { DefaultContainer } from "@/shared/components/common/default-container"
-import { ProductsHero } from "@/shared/components/widgets/user/products/hero"
-import { ViewAllProductsList } from "@/shared/components/widgets/user/products/products-list"
+import { ProductsHero } from "@/shared/components/widgets/products/hero"
+import { ViewAllProductsList } from "@/shared/components/widgets/products/products-list"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {

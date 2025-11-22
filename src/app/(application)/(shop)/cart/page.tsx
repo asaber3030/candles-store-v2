@@ -1,5 +1,5 @@
 import { DefaultContainer } from "@/shared/components/common/default-container"
-import { ViewCartContainer } from "@/shared/components/widgets/user/cart/view-cart-container"
+import { ViewCartContainer } from "@/shared/components/widgets/cart/view-cart-container"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {

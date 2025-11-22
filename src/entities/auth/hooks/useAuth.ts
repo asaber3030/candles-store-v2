@@ -1,3 +1,5 @@
+"use client"
+
 import z from "zod"
 
 import { useDefaultMutation } from "@/shared/hooks/useMutation"

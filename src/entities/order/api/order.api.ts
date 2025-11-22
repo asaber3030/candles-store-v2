@@ -1,20 +1,22 @@
 "use server"
 
-import { getCurrentUser } from "@/entities/auth/api/auth.api"
-import { CartItem } from "@/features/cart/model/cart"
-import { generatePaymentUrl } from "@/features/payment/api/payment.api"
 import prisma from "@/shared/api/prisma"
-import { OrderStatusList } from "@/shared/config/defaults"
-import { actionResponse } from "@/shared/lib/api"
-import { getErrorMessage } from "@/shared/lib/functions"
 
-import { Order } from "@/shared/models/order.model"
+import { createPaginatedResponse, getErrorMessage } from "@/shared/lib/functions"
+import { generatePaymentUrl } from "@/features/payment/api/payment.api"
+import { safeParseNumber } from "@/shared/lib/numbers"
+import { getCurrentUser } from "@/entities/auth/api/auth.api"
+import { actionResponse } from "@/shared/lib/api"
+
 import { OrderStatusEnum, Prisma, UserRoleEnum } from "@prisma/client"
+import { OrderStatusList } from "@/shared/config/defaults"
+import { CartItem } from "@/features/cart/model/cart"
+import { Order } from "@/shared/models/order.model"
 
 export async function getOrdersPaginated(sp: TObject = {}) {
   try {
-    if (!sp.page) sp.page = 1
-    if (!sp.pageSize) sp.pageSize = 10
+    const page = safeParseNumber(sp.page, 1)
+    const pageSize = safeParseNumber(sp.pageSize, 10)
 
     let where: Prisma.OrderWhereInput = {}
     let orderBy = "orderedAt"
@@ -44,9 +46,9 @@ export async function getOrdersPaginated(sp: TObject = {}) {
       where.deliveredAt = null
     }
 
-    const orders = await Order.paginate({
-      page: sp.page,
-      pageSize: sp.pageSize,
+    const orders = await prisma.order.findMany({
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       orderBy: { [orderBy]: orderDirection },
       where,
       include: {
@@ -57,8 +59,8 @@ export async function getOrdersPaginated(sp: TObject = {}) {
         address: true
       }
     })
-
-    return orders
+    const total = await prisma.order.count({ where })
+    return createPaginatedResponse(orders, total, page, pageSize)
   } catch (error) {
     console.log(error)
     throw new Error("Error fetching paginated orders")
@@ -74,7 +76,7 @@ export async function getOrder(orderId: number) {
         company: true,
         coupon: true,
         user: true,
-        address: true
+        address: { include: { country: true, city: true } }
       }
     })
     return order
@@ -148,17 +150,17 @@ export async function getUserOrder(orderId: number) {
 
 export async function getUserOrders(userId: number, sp: TObject = {}) {
   try {
-    if (!sp.page) sp.page = 1
-    if (!sp.pageSize) sp.pageSize = 10
+    const page = safeParseNumber(sp.page, 1)
+    const pageSize = safeParseNumber(sp.pageSize, 10)
 
     let where: Prisma.OrderWhereInput = { userId }
     if (sp.status && OrderStatusList.includes(sp.status)) {
       where.status = sp.status as OrderStatusEnum
     }
 
-    const orders = await Order.paginate({
-      pageSize: sp.pageSize,
-      page: sp.page,
+    const orders = await prisma.order.findMany({
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       where,
       orderBy: { orderedAt: "desc" },
       include: {
@@ -169,10 +171,44 @@ export async function getUserOrders(userId: number, sp: TObject = {}) {
         address: { include: { country: true, city: true } }
       }
     })
-    return orders
+    const total = await prisma.order.count({ where })
+    return createPaginatedResponse(orders, total, page, pageSize)
   } catch (error) {
     console.log(error)
     throw new Error("Error fetching user orders")
+  }
+}
+
+export async function getCurrentCompanyOrders(sp: TObject = {}) {
+  try {
+    const company = await getCurrentUser()
+    if (!company) throw new Error("User not authenticated")
+
+    const page = safeParseNumber(sp.page, 1)
+    const pageSize = safeParseNumber(sp.pageSize, 10)
+
+    let where: Prisma.OrderWhereInput = { companyId: company.id }
+
+    if (sp.status && OrderStatusList.includes(sp.status)) where.status = sp.status as OrderStatusEnum
+
+    const orders = await prisma.order.findMany({
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      where,
+      orderBy: { orderedAt: "desc" },
+      include: {
+        items: { include: { product: true } },
+        company: true,
+        coupon: true,
+        user: true,
+        address: { include: { country: true, city: true } }
+      }
+    })
+    const total = await prisma.order.count({ where })
+    return createPaginatedResponse(orders, total, page, pageSize)
+  } catch (error) {
+    console.log(error)
+    throw new Error("Error fetching company orders")
   }
 }
 
@@ -414,27 +450,38 @@ export async function createOnlineOrderAction(addressId: number, items: CartItem
         })
       }
 
-      const size = await prisma.productSize.findUnique({
-        where: { id: item.size?.id, deletedAt: null }
-      })
-      if (!size && item.size) {
-        return actionResponse({
-          status: 404,
-          message: `Size with ID ${item.size.id} not found for product ID ${item.id}`
+      let singleItemPrice = 0
+      if (item.size) {
+        const size = await prisma.productSize.findUnique({
+          where: { id: item.size.id, deletedAt: null }
         })
+        if (!size) {
+          return actionResponse({
+            status: 404,
+            message: `Size with ID ${item.size.id} not found for product ID ${item.id}`
+          })
+        }
+        singleItemPrice = size.price
+      } else {
+        singleItemPrice = product.price
       }
 
-      const color = await prisma.productColor.findUnique({
-        where: { id: item.color?.id, deletedAt: null }
-      })
-      if (!color && item.color) {
-        return actionResponse({
-          status: 404,
-          message: `Color with ID ${item.color.id} not found for product ID ${item.id}`
+      let colorId = null
+
+      if (item.color) {
+        const color = await prisma.productColor.findUnique({
+          where: { id: item.color.id, deletedAt: null }
         })
+        if (!color) {
+          return actionResponse({
+            status: 404,
+            message: `Color with ID ${item.color.id} not found for product ID ${item.id}`
+          })
+        }
+        colorId = color.id
       }
 
-      const unitPrice = size ? size.price : product.price
+      const unitPrice = singleItemPrice
       const itemTotal = unitPrice * item.quantity
 
       await prisma.orderItem.create({
@@ -444,8 +491,8 @@ export async function createOnlineOrderAction(addressId: number, items: CartItem
           quantity: item.quantity,
           unitPrice: unitPrice,
           totalPrice: itemTotal,
-          sizeId: size ? size.id : null,
-          colorId: color ? color.id : null
+          sizeId: item.size ? item.size.id : null,
+          colorId
         }
       })
     })

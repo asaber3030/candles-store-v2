@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { useCartStore } from "@/features/cart/model/cart.store"
 import { useState } from "react"
 
-import { formatCurrency } from "@/shared/lib/numbers"
+import { formatCurrency, safeParseNumber } from "@/shared/lib/numbers"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
 import { FullAddress } from "@/entities/user/model/user"
@@ -16,6 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group"
 import { Button } from "@/shared/components/ui/button"
 import { Separator } from "@/shared/components/ui/separator"
 import { CheckoutButton } from "./checkout-button"
+import { defaultValues } from "@/shared/config/defaults"
 
 type Props = {
   addresses: FullAddress[]
@@ -27,6 +28,8 @@ export const CheckoutHandler = ({ addresses, defaultAddress }: Props) => {
 
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(defaultAddress ? defaultAddress.id : null)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodTypeEnum>("Cash")
+
+  const address = addresses.find((addr) => addr.id === selectedAddressId)
 
   const { items, getTotal } = useCartStore()
 
@@ -43,6 +46,12 @@ export const CheckoutHandler = ({ addresses, defaultAddress }: Props) => {
             <span>{t("Total Amount")}:</span>
             <span className='text-green-700 font-semibold'>{formatCurrency(getTotal())}</span>
           </li>
+          {address && (
+            <li className='flex justify-between'>
+              <span>{t("Delivery Fees")}:</span>
+              <span className='text-green-700 font-semibold'>{formatCurrency(safeParseNumber(address.city.price + address.country.price, defaultValues.defaultDeliveryFees))}</span>
+            </li>
+          )}
         </ul>
       </div>
 
@@ -87,7 +96,7 @@ export const CheckoutHandler = ({ addresses, defaultAddress }: Props) => {
 
         <Separator className='my-4' />
 
-        <CheckoutButton selectedAddressId={selectedAddressId} paymentMethod={paymentMethod} />
+        {address && <CheckoutButton deliveryFees={safeParseNumber(address.city.price + address.country.price, defaultValues.defaultDeliveryFees)} selectedAddressId={selectedAddressId} paymentMethod={paymentMethod} />}
       </div>
     </div>
   )

@@ -13,17 +13,20 @@ import { z } from "zod"
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
 import { CreateCategorySchema } from "@/entities/category/model/category.schema"
-import { TextField } from "@/shared/components/form/form"
+import { TextField, TextareaField } from "@/shared/components/form/form"
 import { Button } from "@/shared/components/ui/button"
 import { Form } from "@/shared/components/ui/form"
 import { Plus } from "lucide-react"
+import { FileUploader } from "@/shared/components/form/file"
 
 type TMut = {
   data: z.infer<typeof CreateCategorySchema>
+  file: File | null
 }
 
 export const CreateCategoryModal = () => {
   const [open, setOpen] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
 
   const t = useTranslations()
   const qc = useQueryClient()
@@ -32,7 +35,7 @@ export const CreateCategoryModal = () => {
   })
 
   const mutation = useDefaultMutation({
-    mutationFn: ({ data }: TMut) => createCategoryAction(data),
+    mutationFn: ({ data }: TMut) => createCategoryAction(data, file),
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: queryKeys.categories.index() })
       if (data.status == 201) {
@@ -44,7 +47,8 @@ export const CreateCategoryModal = () => {
 
   const handleAction = (data: z.infer<typeof CreateCategorySchema>) => {
     mutation.mutate({
-      data
+      data,
+      file
     })
   }
 
@@ -63,7 +67,10 @@ export const CreateCategoryModal = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleAction)} className='space-y-4'>
+            <FileUploader label={t("Category Image")} setFile={setFile} />
             <TextField name='name' label={t("Name")} control={form.control} />
+            <TextField name='nameAr' label={t("Arabic Name")} control={form.control} />
+            <TextareaField name='description' label={t("Description")} control={form.control} />
 
             <Button loading={mutation.isPending} variant='success'>
               {t("Save")}

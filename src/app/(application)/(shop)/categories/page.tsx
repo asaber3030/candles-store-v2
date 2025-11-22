@@ -132,7 +132,7 @@ export default function CategoriesPage() {
             ) : (
               <div className='space-y-3'>
                 {categories?.map((category) => (
-                  <Link href={userRoutes.categories.single(category.id)}>
+                  <Link key={`category-${category.id}`} href={userRoutes.categories.single(category.id)}>
                     <Card key={category.id} className='group hover:shadow-md transition-all duration-200'>
                       <CardContent className='p-4'>
                         <div className='flex items-center justify-between'>

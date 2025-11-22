@@ -9,6 +9,7 @@ import { TCreateCategoryPayload } from "../model/category"
 import { ZodError } from "zod"
 
 import { actionResponse } from "@/shared/lib/api"
+import { uploadToCloudinary } from "@/shared/api/cloudinary"
 
 export async function getCategoriesPaginated(sp: TObject = {}) {
   try {
@@ -69,16 +70,21 @@ export async function getCategory(categoryId: number) {
 }
 
 /* Admin Actions */
-export async function createCategoryAction(data: TCreateCategoryPayload) {
+export async function createCategoryAction(data: TCreateCategoryPayload, file: File | null) {
   try {
     const parsed = CreateCategorySchema.parse(data)
     const newCategory = await prisma.category.create({
       data: parsed
     })
+    let fileUrl = null
+    if (file) {
+      const uploadResult = await uploadToCloudinary(file, "categories")
+      fileUrl = uploadResult.url
+    }
     return actionResponse({
       status: 201,
       message: "Category created successfully",
-      data: newCategory
+      data: { ...newCategory, icon: fileUrl }
     })
   } catch (error) {
     if (error instanceof ZodError) {
@@ -94,13 +100,22 @@ export async function createCategoryAction(data: TCreateCategoryPayload) {
   }
 }
 
-export async function updateCategoryAction(categoryId: number, data: TCreateCategoryPayload) {
+export async function updateCategoryAction(categoryId: number, data: TCreateCategoryPayload, file: File | null = null) {
   try {
     const parsed = CreateCategorySchema.parse(data)
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+      select: { id: true, icon: true }
+    })
+    let fileUrl = category?.icon
+
+    if (file) fileUrl = (await uploadToCloudinary(file, "categories")).url
+
     const updatedCategory = await prisma.category.update({
       where: { id: categoryId },
-      data: parsed
+      data: { ...parsed, icon: fileUrl }
     })
+
     return actionResponse({
       status: 200,
       message: "Category updated successfully",

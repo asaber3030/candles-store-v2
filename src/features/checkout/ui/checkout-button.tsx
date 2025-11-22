@@ -18,6 +18,7 @@ import { Button } from "@/shared/components/ui/button"
 
 type Props = {
   selectedAddressId: number | null
+  deliveryFees: number
   paymentMethod: PaymentMethodTypeEnum
 }
 
@@ -26,7 +27,7 @@ type Mut = {
   data: CartItem[]
 }
 
-export const CheckoutButton = ({ selectedAddressId, paymentMethod }: Props) => {
+export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod }: Props) => {
   const [open, setOpen] = useState(false)
 
   const router = useRouter()
@@ -96,8 +97,16 @@ export const CheckoutButton = ({ selectedAddressId, paymentMethod }: Props) => {
               <span>{items.length}</span>
             </li>
             <li className='flex justify-between'>
-              <span>{t("Total Amount")}:</span>
+              <span>{t("Sub Total")}:</span>
               <span className='text-green-700 font-semibold'>{formatCurrency(getTotal())}</span>
+            </li>
+            <li className='flex justify-between'>
+              <span>{t("Delivery Fees")}:</span>
+              <span className='text-green-700 font-semibold'>{formatCurrency(deliveryFees)}</span>
+            </li>
+            <li className='flex justify-between'>
+              <span>{t("Total Amount")}:</span>
+              <span className='text-green-700 font-semibold'>{formatCurrency(getTotal() + deliveryFees)}</span>
             </li>
           </ul>
         </section>

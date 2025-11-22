@@ -2,6 +2,7 @@ export const adminRoutes = {
   dashboard: "/admin",
   login: "/admin/login",
   profile: "/admin/profile",
+  changePassword: "/admin/profile/update-password",
   settings: "/admin/settings",
   products: {
     index: "/admin/products",

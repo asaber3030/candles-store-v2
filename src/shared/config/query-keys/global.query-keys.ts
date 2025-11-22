@@ -33,7 +33,8 @@ export const queryKeys = {
   orders: {
     index: (sp: TObject = {}) => ["admin", "orders", "paginated", sp],
     single: (id: number) => ["admin", "orders", id],
-    userOrders: (userId: number, sp: TObject = {}) => ["admin", "users", userId, "orders", sp]
+    userOrders: (userId: number, sp: TObject = {}) => ["admin", "users", userId, "orders", sp],
+    currentCompanyOrders: (sp: TObject = {}) => ["admin", "companies", "orders", sp]
   },
   cart: {
     current: (sp: TObject = {}) => ["admin", "cart", "current", sp],

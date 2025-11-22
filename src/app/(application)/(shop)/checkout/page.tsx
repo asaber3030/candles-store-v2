@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 
 import { DefaultContainer } from "@/shared/components/common/default-container"
 import { Metadata } from "next"
-import { CartItemsTable } from "@/shared/components/widgets/user/cart/cart-items-table"
+import { CartItemsTable } from "@/shared/components/widgets/cart/cart-items-table"
 import { CheckoutHandler } from "@/features/checkout/ui/checkout-handler"
 
 export const metadata: Metadata = {

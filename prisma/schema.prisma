@@ -31,10 +31,8 @@ enum AnimationEnum {
   Christmas
   Default
   Halloween
-  NewYear
   Ramadan
-  Summer
-  Winter
+  Valentine
 }
 
 model Settings {

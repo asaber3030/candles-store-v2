@@ -1,3 +1,5 @@
+"use client"
+
 import { useDefaultMutation } from "@/shared/hooks/useMutation"
 import { useRouter } from "next/navigation"
 

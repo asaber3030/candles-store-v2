@@ -1,7 +1,7 @@
 import { getCategory } from "@/entities/category/api/category.api"
 import { DefaultContainer } from "@/shared/components/common/default-container"
 import { ErrorAlert } from "@/shared/components/common/error-alert"
-import { ViewCategoryProductsList } from "@/shared/components/widgets/user/categories/products-list"
+import { ViewCategoryProductsList } from "@/shared/components/widgets/categories/products-list"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {

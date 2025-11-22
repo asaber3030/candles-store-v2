@@ -1,7 +1,7 @@
 import { getCurrentUser } from "@/entities/auth/api/auth.api"
-import { AdminNavbar } from "@/features/admin/ui/navbar/navbar"
 import { AdminSidebar } from "@/features/admin/ui/sidebar/sidebar"
-import { userRoutes } from "@/shared/config/routes"
+import { AdminNavbar } from "@/shared/components/widgets/navbar/admin"
+import { adminRoutes, userRoutes } from "@/shared/config/routes"
 import { cn } from "@/shared/lib/cn"
 import { Metadata } from "next"
 import { getLocale } from "next-intl/server"
@@ -22,16 +22,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const isArabic = locale === "ar"
 
   return (
-    <div className={cn("xl:flex min-h-screen overflow-hidden bg-gray-50 dark:bg-neutral-900", isArabic ? "flex-row-reverse" : "flex-row")}>
+    <div className={cn("flex min-h-screen overflow-hidden bg-gray-50 dark:bg-neutral-900")}>
       {/* Sidebar */}
-      <aside className='xl:w-[250px] relative border-r border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-950'>
+      <aside className={cn("w-[250px] relative bg-white dark:bg-neutral-950", isArabic ? "border-l border-gray-200 dark:border-neutral-800" : "border-r border-gray-200 dark:border-neutral-800")}>
         <AdminSidebar />
       </aside>
 
       {/* Main Content */}
       <div className='flex flex-1 flex-col'>
-        <AdminNavbar />
-        <main className='flex-1 py-5 xl:px-10 px-4 overflow-y-auto'>{children}</main>
+        <AdminNavbar logoUrl={adminRoutes.dashboard} />
+        <main className={cn("flex-1 py-5 overflow-y-auto xl:px-10 px-4")}>{children}</main>
       </div>
     </div>
   )

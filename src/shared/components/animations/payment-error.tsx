@@ -16,7 +16,7 @@ export function FailedAnimation() {
 
   return (
     <div ref={containerRef} className='flex justify-center'>
-      <div className='relative w-32 h-32 bg-[#fff] rounded-full p-3'>
+      <div className='relative w-32 h-32 bg-white rounded-full p-3'>
         <svg className='w-full h-full' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'>
           {/* Outer circle */}
           <circle

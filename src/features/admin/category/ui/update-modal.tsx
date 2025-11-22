@@ -12,20 +12,23 @@ import { z } from "zod"
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
 import { CreateCategorySchema } from "@/entities/category/model/category.schema"
-import { TextField } from "@/shared/components/form/form"
+import { TextField, TextareaField } from "@/shared/components/form/form"
 import { Button } from "@/shared/components/ui/button"
 import { Form } from "@/shared/components/ui/form"
 import { Edit, Plus } from "lucide-react"
 import { Category } from "@prisma/client"
 import { TooltipButton } from "@/shared/components/common/tooltip-button"
 import { useDefaultMutation } from "@/shared/hooks/useMutation"
+import { FileUploader } from "@/shared/components/form/file"
 
 type TMut = {
   data: z.infer<typeof CreateCategorySchema>
+  file: File | null
 }
 
 export const UpdateCategoryModal = ({ category }: { category: Category }) => {
   const [open, setOpen] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
 
   const t = useTranslations()
   const qc = useQueryClient()
@@ -37,7 +40,7 @@ export const UpdateCategoryModal = ({ category }: { category: Category }) => {
   })
 
   const mutation = useDefaultMutation({
-    mutationFn: ({ data }: TMut) => updateCategoryAction(category.id, data),
+    mutationFn: ({ data, file }: TMut) => updateCategoryAction(category.id, data, file),
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: queryKeys.categories.index() })
       if (data.status === 200) {
@@ -48,7 +51,8 @@ export const UpdateCategoryModal = ({ category }: { category: Category }) => {
 
   const handleAction = (data: z.infer<typeof CreateCategorySchema>) => {
     mutation.mutate({
-      data
+      data,
+      file
     })
   }
 
@@ -65,7 +69,10 @@ export const UpdateCategoryModal = ({ category }: { category: Category }) => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleAction)} className='space-y-4'>
+            <FileUploader label={t("Category Image")} setFile={setFile} />
             <TextField name='name' label={t("Name")} control={form.control} />
+            <TextField name='nameAr' label={t("Arabic Name")} control={form.control} />
+            <TextareaField name='description' label={t("Description")} control={form.control} />
 
             <Button loading={mutation.isPending} variant='success'>
               {t("Save")}

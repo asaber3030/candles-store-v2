@@ -1,11 +1,26 @@
 import { queryKeys } from "@/shared/config/query-keys"
 import { useQuery } from "@tanstack/react-query"
-import { getOrdersPaginated, getUserOrders } from "../api/order.api"
+import { getCurrentCompanyOrders, getOrdersPaginated, getUserOrders } from "../api/order.api"
 
 export function useOrders(sp: TObject = {}) {
   const { data, isLoading, refetch, isRefetching, error } = useQuery({
     queryKey: queryKeys.orders.index(sp),
     queryFn: ({ queryKey }) => getOrdersPaginated(queryKey[3] as TObject)
+  })
+
+  return {
+    orders: data,
+    isOrdersLoading: isLoading,
+    refetchOrders: refetch,
+    isOrdersRefetching: isRefetching,
+    ordersError: error
+  }
+}
+
+export function useCurrentCompanyOrders(sp: TObject = {}) {
+  const { data, isLoading, refetch, isRefetching, error } = useQuery({
+    queryKey: queryKeys.orders.currentCompanyOrders(sp),
+    queryFn: ({ queryKey }) => getCurrentCompanyOrders(queryKey[3] as TObject)
   })
 
   return {

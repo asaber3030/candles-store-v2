@@ -420,5 +420,13 @@
   "See all different types of categories of candles": "See all different types of categories  of candles",
   "Search categories": "Search categories...",
   "# products": "{count} products",
-  "Try adjusting your search or create a new category": "Try adjusting your search or create a new category"
+  "Try adjusting your search or create a new category": "Try adjusting your search or create a new category",
+
+  "Delivery Fees": "Delivery Fees",
+  "Total Incoming": "Total Incoming",
+  "Total Earned": "Total Earned",
+  "Delivered Orders": "Delivered Orders",
+  "Details": "Details",
+  "Change Password": "Change Password",
+  "Category Image": "Category Image"
 }

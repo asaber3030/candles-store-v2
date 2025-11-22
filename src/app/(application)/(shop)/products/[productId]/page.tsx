@@ -1,5 +1,5 @@
 import { getProduct, getProductBySlug } from "@/entities/product/api/proudct.api"
-import { ViewProductContainer } from "@/shared/components/widgets/user/products/view-product-container"
+import { ViewProductContainer } from "@/shared/components/widgets/products/view-product-container"
 
 type Props = {
   params: Promise<{ productId: string }>

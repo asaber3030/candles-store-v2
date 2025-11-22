@@ -21,8 +21,20 @@ export const CategoriesColumns: ColumnDef<Category>[] = [
     header: "ID"
   },
   {
+    accessorKey: "icon",
+    header: "Icon",
+    cell: ({ row }) => {
+      const iconUrl = row.getValue("icon") as string
+      return iconUrl ? <img src={iconUrl} alt='Category Icon' className='w-10 h-10 object-cover rounded-md' /> : null
+    }
+  },
+  {
     accessorKey: "name",
     header: "Name"
+  },
+  {
+    accessorKey: "nameAr",
+    header: "Arabic Name"
   },
   {
     accessorKey: "deletedAt",

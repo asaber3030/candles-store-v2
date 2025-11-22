@@ -408,5 +408,12 @@
   "See all different types of categories of candles": "شاهد جميع أنواع الفئات المختلفة للشموع",
   "Search categories": "ابحث في الفئات...",
   "# products": "{count} منتج",
-  "Try adjusting your search or create a new category": "حاول تعديل بحثك أو إنشاء فئة جديدة"
+  "Try adjusting your search or create a new category": "حاول تعديل بحثك أو إنشاء فئة جديدة",
+
+  "Delivery Fees": "رسوم التوصيل",
+  "Total Incoming": "اجمالي الوارد",
+  "Total Earned": "إجمالي المكتسب",
+  "Delivered Orders": "الطلبات التي تم توصيلها",
+  "Details": "تفاصيل",
+  "Change Password": "تغيير كلمة المرور"
 }

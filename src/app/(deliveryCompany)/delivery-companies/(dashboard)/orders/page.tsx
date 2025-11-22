@@ -1,5 +1,5 @@
-import { AdminOrdersFilters } from "@/features/admin/orders/ui/filters"
-import { OrdersTable } from "@/features/admin/orders/ui/table"
+import { DeliveryOrdersFilters } from "@/features/deliveryCompany/orders/ui/filters"
+import { DeliveryOrdersTable } from "@/features/deliveryCompany/orders/ui/table"
 import { PageTitle } from "@/shared/components/common/page-title"
 
 import { getTranslations } from "next-intl/server"
@@ -15,9 +15,9 @@ export default async function OrdersPage({ searchParams }: Props) {
   return (
     <div>
       <PageTitle title={t("Orders")}>
-        <AdminOrdersFilters />
+        <DeliveryOrdersFilters />
       </PageTitle>
-      <OrdersTable searchParams={sp} />
+      <DeliveryOrdersTable searchParams={sp} />
     </div>
   )
 }
