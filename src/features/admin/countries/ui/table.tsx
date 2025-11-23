@@ -19,7 +19,7 @@ export const CountriesTable = ({ searchParams }: Props) => {
   return (
     <div>
       <DataTable columns={CountriesColumns} data={countries?.data as any} />
-      <SimplePagination hasNextPage={countries?.pagination.hasNextPage} hasPrevPage={countries?.pagination.hasPrevPage} />
+      <SimplePagination hasNextPage={countries?.pagination?.hasNextPage} hasPrevPage={countries?.pagination?.hasPrevPage} />
     </div>
   )
 }

@@ -1,8 +1,9 @@
 import crypto from "crypto"
 
-import { KashierHashData, KashierInitPaymentData, KashierInitPaymentResult, KashierVerifyPaymentData } from "@/features/payment/model/payment"
 import kashierConfig from "../config/services/kashier.config"
-import { defaultValues } from "../config/defaults"
+import appConfig from "../config/defaults/app"
+
+import { KashierHashData, KashierInitPaymentData, KashierInitPaymentResult, KashierVerifyPaymentData } from "@/features/payment/model/payment"
 
 export class KashierService {
   private baseUrl: string
@@ -12,7 +13,7 @@ export class KashierService {
 
   constructor() {
     this.baseUrl = kashierConfig.baseUrl
-    this.merchantId = kashierConfig.mid
+    this.merchantId = kashierConfig.merchantId
     this.apiKey = kashierConfig.apiKey
     this.testMode = kashierConfig.testMode
   }
@@ -27,7 +28,7 @@ export class KashierService {
   }
 
   private getRedirectUrl(orderId: number): string {
-    return `${defaultValues.apiUrl}/payments/${orderId}`
+    return `${appConfig.apiUrl}/payments/${orderId}`
   }
 
   public initializePayment(paymentData: KashierInitPaymentData): KashierInitPaymentResult {

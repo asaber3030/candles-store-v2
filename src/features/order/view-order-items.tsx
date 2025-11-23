@@ -32,9 +32,10 @@ export const PartOrderItems = ({ items }: Props) => {
           {items.map((item) => (
             <TableRow key={item.id}>
               <TableCell className='font-medium'>
-                <Link href={adminRoutes.products.view(item.productId)} className='flex gap-2 items-center text-blue-600 hover:underline'>
-                  <img className='size-20 rounded-md object-contain' src={item.product.picture} />
-                  {item.product.name}
+                <Link href={adminRoutes.products.view(item.productId)} className='flex gap-2 items-center text-blue-600 hover:underline min-w-0'>
+                  <img className='size-20 rounded-md object-contain shrink-0' src={item.product.picture} alt={item.product.name} />
+
+                  <span className='truncate max-w-[180px]'>{item.product.name}</span>
                 </Link>
               </TableCell>
               <TableCell>x{item.quantity}</TableCell>

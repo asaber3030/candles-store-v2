@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
 import { adminRoutes } from "@/shared/config/routes"
+import { deliveryRoutes } from "@/shared/config/routes/delivery.routes"
 import { getOrderStatusLabel } from "@/shared/lib/functions"
 import { OrderStatusEnum } from "@prisma/client"
 import { Clock, CheckCircle, AlertCircle, Package, Truck, XIcon } from "lucide-react"
@@ -55,7 +56,7 @@ const defaultConfig = {
   accentColor: "bg-slate-500/20 dark:bg-slate-500/10"
 }
 
-export function OrderStatusCountCard({ items }: OrderStatusProps) {
+export function DeliveryOrderStatusCountCard({ items }: OrderStatusProps) {
   const totalOrders = items.reduce((sum, item) => sum + item.count, 0)
 
   return (
@@ -66,7 +67,7 @@ export function OrderStatusCountCard({ items }: OrderStatusProps) {
         return (
           <Link
             key={status.status}
-            href={adminRoutes.orders.withStatus(status.status)}
+            href={deliveryRoutes.orders.withStatus(status.status)}
             className={`
                   flex items-center shadow-md  justify-between p-4 rounded-lg
                   transition-all duration-200 hover:shadow-md

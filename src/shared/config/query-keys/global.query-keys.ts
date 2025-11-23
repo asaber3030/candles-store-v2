@@ -17,7 +17,8 @@ export const queryKeys = {
   coupons: {
     index: (sp: TObject = {}) => ["admin", "coupons", "paginated", sp],
     all: (sp: TObject = {}) => ["admin", "coupons", "all", sp],
-    single: (id: number) => ["admin", "coupons", id]
+    single: (id: number) => ["admin", "coupons", id],
+    singleByCode: (code: string) => ["admin", "coupons", code, "code"]
   },
   countries: {
     index: (sp: TObject = {}) => ["admin", "countries", "paginated", sp],

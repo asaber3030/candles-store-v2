@@ -6,7 +6,10 @@ export const deliveryRoutes = {
 
   orders: {
     index: "/delivery-companies/orders",
-    details: (id: number) => `/delivery-companies/orders/${id}`
+    delivered: "/delivery-companies/orders?status=Delivered",
+    undelivered: "/delivery-companies/orders?notDelivered=yes",
+    details: (id: number) => `/delivery-companies/orders/${id}`,
+    withStatus: (status?: string) => (status ? `/admin/orders?status=${status}` : "/admin/orders")
   },
   users: {
     index: "/delivery-companies/users",

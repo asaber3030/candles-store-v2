@@ -1,7 +1,7 @@
 import prisma from "@/shared/api/prisma"
+import appConfig from "@/shared/config/defaults/app"
 
 import { verifyWebhookSignature } from "@/features/payment/api/payment.api"
-import { defaultValues } from "@/shared/config/defaults"
 import { response } from "@/shared/lib/api"
 import { NextResponse } from "next/server"
 
@@ -36,7 +36,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ orderId:
       })
 
     if (query.paymentStatus === "SUCCESS") {
-      const redirectUrl = `${defaultValues.appUrl}/payments/success?${url.searchParams.toString()}`
+      const redirectUrl = `${appConfig.appUrl}/payments/success?${url.searchParams.toString()}`
       await prisma.order.update({
         where: { id },
         data: {
@@ -51,7 +51,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ orderId:
       })
       return NextResponse.redirect(redirectUrl)
     } else {
-      const redirectUrl = `${defaultValues.appUrl}/payments/error?${url.searchParams.toString()}`
+      const redirectUrl = `${appConfig.appUrl}/payments/error?${url.searchParams.toString()}`
       await prisma.order.update({
         where: { id },
         data: {

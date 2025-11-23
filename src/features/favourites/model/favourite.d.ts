@@ -2,6 +2,8 @@ import { ProductColor, ProductSize } from "@prisma/client"
 
 export type FavouriteItem = {
   id: number | string
+  slug: string
+  price: number
   name?: string
   image?: string
 }

@@ -15,9 +15,12 @@ import { LanguageSwitcher } from "@/shared/components/common/language-switcher"
 import { NavbarGuestLinks } from "./navbar-guest-links"
 import { CartDrawer } from "@/features/cart/ui/drawer"
 import { Separator } from "@/shared/components/ui/separator"
-import { MenuIcon } from "lucide-react"
+import { HeartIcon, MenuIcon } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import { cn } from "@/shared/lib/cn"
+import { LinkBtn } from "@/shared/components/common/link-button"
+import { useFavouritesStore } from "@/features/favourites/model/favourite.store"
 
 export const MobileNavbarContainer = () => {
   const [open, setOpen] = useState(false)
@@ -25,6 +28,7 @@ export const MobileNavbarContainer = () => {
   const t = useTranslations()
 
   const { user, isUserLoading } = useCurrentUser()
+  const { favourites } = useFavouritesStore()
 
   const handleClose = () => {
     setOpen(false)
@@ -37,6 +41,10 @@ export const MobileNavbarContainer = () => {
       <div className='flex gap-2 items-center'>
         <LanguageSwitcher />
         <CartDrawer />
+        <div className={cn("relative")}>
+          <LinkBtn href={userRoutes.favourites} size='icon' icon={HeartIcon} variant='outlineDestructive' className='h-10 w-10 text-red-600' />
+          <span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full'>{favourites.length}</span>
+        </div>
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button icon={MenuIcon} size='icon' variant='outline' className='h-10 w-10' />

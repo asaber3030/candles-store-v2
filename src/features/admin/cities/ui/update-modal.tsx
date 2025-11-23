@@ -88,10 +88,13 @@ export const UpdateCityModal = ({ city }: { city: City }) => {
                     label={t("Country")}
                     control={form.control}
                     defaultValue={city.countryId.toString()}
-                    options={countries?.map((country) => ({
-                      label: country.name,
-                      value: country.id.toString()
-                    }))}
+                    options={
+                      countries &&
+                      countries?.map((country) => ({
+                        label: country.name,
+                        value: country.id.toString()
+                      }))
+                    }
                   />
                 ) : (
                   <p className='text-sm text-muted-foreground'>{t("No Countries Found")}</p>

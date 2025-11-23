@@ -80,10 +80,13 @@ export const CreateCityModal = () => {
                     valueAsNumber
                     label={t("Country")}
                     control={form.control}
-                    options={countries?.map((country) => ({
-                      label: country.name,
-                      value: country.id.toString()
-                    }))}
+                    options={
+                      countries &&
+                      countries?.map((country) => ({
+                        label: country.name,
+                        value: country.id.toString()
+                      }))
+                    }
                   />
                 ) : (
                   <p className='text-sm text-muted-foreground'>{t("No Countries Found")}</p>

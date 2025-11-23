@@ -1,6 +1,10 @@
 "use server"
 
+import EmailService from "@/shared/api/email"
+
+import emailConfig from "@/shared/config/services/email.config"
 import authConfig from "@/shared/config/services/auth.config"
+import appConfig from "@/shared/config/defaults/app"
 import bcrypt from "bcryptjs"
 import prisma from "@/shared/api/prisma"
 import jwt from "jsonwebtoken"
@@ -12,6 +16,7 @@ import { cookies } from "next/headers"
 import { AuthLoginSchema, AuthRegisterSchema, AuthUpdateInformationSchema, AuthUpdatePasswordSchema } from "../model/auth.schema"
 import { TLoginType, TUpdateInformationPayload, TUpdatePasswordPayload } from "../model/auth"
 import { revalidatePath } from "next/cache"
+import { randomBetween } from "@/shared/lib/numbers"
 
 export async function getCurrentUser() {
   try {
@@ -214,6 +219,121 @@ export async function logoutAction() {
     revalidatePath("/")
     return actionResponse({
       message: "Logout successful",
+      status: 200
+    })
+  } catch (error) {
+    return actionResponse({
+      message: error instanceof Error ? error.message : "Unknown error",
+      status: 400
+    })
+  }
+}
+
+export async function sendPasswordResetEmail(email: string) {
+  try {
+    const user = await prisma.user.findUnique({ where: { email } })
+    if (!user) throw new Error("User not found")
+
+    const code = randomBetween(100000, 999999).toString()
+    const token = jwt.sign({ code }, emailConfig.secret, { expiresIn: "10m" })
+
+    const existingToken = await prisma.passwordResetToken.findUnique({
+      where: { email }
+    })
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
+
+    if (existingToken && existingToken?.expiresAt) {
+      if (existingToken.expiresAt > new Date()) {
+        return actionResponse({
+          message: "A reset token has already been sent. Please check your email.",
+          status: 400
+        })
+      } else {
+        await prisma.passwordResetToken.delete({ where: { email } })
+      }
+    }
+
+    await prisma.passwordResetToken.create({
+      data: {
+        email,
+        token,
+        expiresAt
+      }
+    })
+
+    await EmailService.sendEmail({
+      to: email,
+      subject: "Password Reset Request",
+      text: `
+        Click the link below to reset your password:
+        ${appConfig.appUrl}/reset-password?token=${token}&email=${email}
+      `
+    })
+
+    return actionResponse({
+      message: "Password reset email sent",
+      status: 200
+    })
+  } catch (error) {
+    return actionResponse({
+      message: error instanceof Error ? error.message : "Unknown error",
+      status: 400
+    })
+  }
+}
+
+export async function checkPasswordResetToken(email: string, token: string) {
+  try {
+    const record = await prisma.passwordResetToken.findUnique({
+      where: { email }
+    })
+    if (!record) throw new Error("Invalid or expired token")
+
+    if (record.token !== token) throw new Error("Invalid token")
+    if (!record.expiresAt) throw new Error("Invalid token")
+    if (record.expiresAt < new Date()) {
+      await prisma.passwordResetToken.delete({ where: { email } })
+      throw new Error("Token has expired")
+    }
+
+    return actionResponse({
+      message: "Token is valid",
+      status: 200
+    })
+  } catch (error) {
+    return actionResponse({
+      message: error instanceof Error ? error.message : "Unknown error",
+      status: 400
+    })
+  }
+}
+
+export async function resetPasswordAction(email: string, token: string, newPassword: string) {
+  try {
+    const record = await prisma.passwordResetToken.findUnique({
+      where: { email }
+    })
+    if (!record) throw new Error("Invalid or expired token")
+
+    if (record.token !== token) throw new Error("Invalid token")
+    if (!record.expiresAt) throw new Error("Invalid token")
+
+    if (record.expiresAt < new Date()) {
+      await prisma.passwordResetToken.delete({ where: { email } })
+      throw new Error("Token has expired")
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10)
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedNewPassword }
+    })
+
+    await prisma.passwordResetToken.delete({ where: { email } })
+
+    return actionResponse({
+      message: "Password has been reset successfully",
       status: 200
     })
   } catch (error) {

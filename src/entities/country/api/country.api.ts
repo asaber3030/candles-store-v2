@@ -2,31 +2,33 @@
 
 import prisma from "@/shared/api/prisma"
 
-import { Prisma } from "@prisma/client"
-import { Country } from "@/shared/models/country.model"
-import { CreateCountrySchema } from "../model/country.schema"
 import { TCreateCountryPayload } from "../model/country"
+import { CreateCountrySchema } from "../model/country.schema"
 import { ZodError } from "zod"
+import { Prisma } from "@prisma/client"
 
+import { createPaginatedResponse } from "@/shared/lib/functions"
+import { safeParseNumber } from "@/shared/lib/numbers"
 import { actionResponse } from "@/shared/lib/api"
 
 export async function getCountriesPaginated(sp: TObject = {}) {
   try {
-    if (!sp.page) sp.page = 1
-    if (!sp.pageSize) sp.pageSize = 10
+    const page = safeParseNumber(sp.page, 1)
+    const pageSize = safeParseNumber(sp.pageSize, 10)
 
     let where: Prisma.CountryWhereInput = {}
 
     if (sp.search) where.name = { contains: String(sp.search) }
 
-    const countries = await Country.paginate({
-      page: sp.page,
-      pageSize: sp.pageSize,
+    const countries = await prisma.country.findMany({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       orderBy: { [sp.orderBy || "id"]: sp.orderDirection || "asc" },
       where
     })
 
-    return countries
+    const total = await prisma.country.count({ where })
+    return createPaginatedResponse(countries, total, page, pageSize)
   } catch (error) {
     console.log(error)
     throw new Error("Error fetching paginated countries")
@@ -35,13 +37,8 @@ export async function getCountriesPaginated(sp: TObject = {}) {
 
 export async function getAllCountries(sp: TObject = {}) {
   try {
-    let where: Prisma.CountryWhereInput = {}
-
-    if (sp.search) where.name = { contains: String(sp.search) }
-
     const countries = await prisma.country.findMany({
-      where: { ...where },
-      orderBy: { [sp.orderBy || "id"]: sp.orderDirection || "asc" }
+      orderBy: { name: "asc" }
     })
 
     return countries

@@ -23,16 +23,6 @@ export const PartOrderSummary = ({ order }: Props) => {
       </CardHeader>
       <CardContent className='grid gap-4'>
         <div className='flex items-center justify-between'>
-          <div>{t("Delivery")}</div>
-          <div className='text-green-700'>{formatCurrency(order.deliveryValue)}</div>
-        </div>
-
-        <div className='flex items-center justify-between'>
-          <div>{t("Discount")}</div>
-          <div className='text-green-700'>{formatCurrency(order.discountValue)}</div>
-        </div>
-
-        <div className='flex items-center justify-between'>
           <div>{t("Payment Method")}</div>
           <div>{order.paymentMethod}</div>
         </div>
@@ -40,6 +30,18 @@ export const PartOrderSummary = ({ order }: Props) => {
         <div className='flex items-center justify-between'>
           <div>{t("Ordered At")}</div>
           <div>{formatDate(order.orderedAt)}</div>
+        </div>
+
+        <Separator className='print:hidden' />
+
+        <div className='flex items-center justify-between'>
+          <div>{t("Delivery")}</div>
+          <div className='text-green-700'>{formatCurrency(order.deliveryValue)}</div>
+        </div>
+
+        <div className='flex items-center justify-between'>
+          <div>{t("Discount")}</div>
+          <div className='text-green-700'>{formatCurrency(order.discountValue)}</div>
         </div>
 
         <Separator className='print:hidden' />

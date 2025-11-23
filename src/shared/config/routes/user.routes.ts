@@ -4,6 +4,7 @@ export const userRoutes = {
   login: "/login",
   register: "/register",
   about: "/about",
+  favourites: "/favourites",
   profile: {
     index: `/profile`,
     single: (section: "orders" | "addresses" | "settings" | "favourites") => `/profile/${section}`,

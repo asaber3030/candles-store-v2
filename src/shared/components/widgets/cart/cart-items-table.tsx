@@ -7,6 +7,7 @@ import { X, Plus, Minus } from "lucide-react"
 import { formatCurrency } from "@/shared/lib/numbers"
 import { useTranslations } from "next-intl"
 import { LinkBtn } from "@/shared/components/common/link-button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../ui/tooltip"
 
 export const CartItemsTable = () => {
   const t = useTranslations()
@@ -40,7 +41,17 @@ export const CartItemsTable = () => {
                 <TableCell>
                   <div className='flex items-center gap-2'>
                     <img src={item.image} alt={item.name} className='w-12 h-12 object-cover rounded' />
-                    <p className='truncate max-w-[200px]'>{item.name}</p>
+
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <p className='truncate max-w-[130px] cursor-default'>{item.name}</p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className='max-w-xs wrap-break-word'>{item.name}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </TableCell>
 

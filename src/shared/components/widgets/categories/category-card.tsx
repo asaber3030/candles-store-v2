@@ -1,15 +1,22 @@
+"use client"
+
 import Link from "next/link"
 
 import { Category } from "@prisma/client"
-import { ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useLocale } from "next-intl"
 
 export function CategoryCard({ category }: { category: Category }) {
+  const locale = useLocale()
+  const name = (locale === "ar" ? category.nameAr : category.name) || category.name
+  const Icon = locale == "ar" ? ChevronLeft : ChevronRight
+
   return (
     <Link
       href={`/categories/${category.id}`}
       className='
         group
-        flex items-center justify-between
+        flex items-end justify-between
         bg-white border border-gray-200
         hover:border-gray-300 hover:shadow-lg
         transition-all duration-200
@@ -17,9 +24,12 @@ export function CategoryCard({ category }: { category: Category }) {
         w-full
       '
     >
-      <span className='text-lg font-medium text-gray-800 group-hover:text-gray-900'>{category.name}</span>
+      <div>
+        <img src={category.icon || "/images/category-placeholder.png"} alt={name} className='w-10 h-10 object-contain mb-2' />
+        <span className='text-lg font-medium text-gray-800 group-hover:text-gray-900'>{name}</span>
+      </div>
 
-      <ChevronRight className='w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-all' />
+      <Icon className='w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-all' />
     </Link>
   )
 }

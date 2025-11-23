@@ -73,12 +73,22 @@ model User {
   reviews       ProductReview[]
   companyOrders Order[]         @relation("CompanyOrders")
 
-  createdAt DateTime @default(now()) @db.Timestamp()
+createdAt DateTime @default(now()) @db.Timestamp()
   updatedAt DateTime @default(now()) @db.Timestamp()
 
   deletedAt DateTime? @db.Timestamp()
 
   @@map("users")
+}
+
+model PasswordResetToken {
+  id        Int    @id @default(autoincrement())
+  email     String @unique
+  token     String
+  createdAt DateTime @default(now()) @db.Timestamp()
+  expiresAt DateTime? @db.Timestamp()
+
+  @@map("password_reset_tokens")
 }
 
 model Address {

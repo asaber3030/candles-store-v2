@@ -72,18 +72,24 @@ export const UpdateUserInformationForm = ({ user }: Props) => {
         {isCountriesLoading ? (
           <InputSkeleton />
         ) : (
-          <SelectField
-            valueAsNumber
-            name='countryId'
-            label={t("Country")}
-            control={form.control}
-            options={
-              countries?.map((country) => ({
-                label: country.name,
-                value: country.id.toString()
-              })) || []
-            }
-          />
+          <>
+            {!countries || countries.length === 0 ? (
+              <p className='text-sm text-red-600'>{t("No countries available")}</p>
+            ) : (
+              <SelectField
+                valueAsNumber
+                name='countryId'
+                label={t("Country")}
+                control={form.control}
+                options={
+                  countries?.map((country) => ({
+                    label: country.name,
+                    value: country.id.toString()
+                  })) || []
+                }
+              />
+            )}
+          </>
         )}
 
         <SelectField

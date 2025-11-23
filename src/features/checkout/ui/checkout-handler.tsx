@@ -1,22 +1,26 @@
 "use client"
+import appConfig from "@/shared/config/defaults/app"
 
-import { useCartTotalByServer } from "@/features/cart/hooks/useCartTotal"
+import { useState, useMemo } from "react"
 import { useTranslations } from "next-intl"
+
 import { useCartStore } from "@/features/cart/model/cart.store"
-import { useState } from "react"
+import { useCheckCoupon } from "@/entities/coupon/hooks/useCoupon"
+
+import { FullAddress } from "@/entities/user/model/user"
+import { PaymentMethodTypeEnum } from "@prisma/client"
 
 import { formatCurrency, safeParseNumber } from "@/shared/lib/numbers"
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
-import { FullAddress } from "@/entities/user/model/user"
 import { Label } from "@/shared/components/ui/label"
-import { CreateUserAddressModal } from "@/features/address/ui/create-modal"
-import { PaymentMethodTypeEnum } from "@prisma/client"
-import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group"
+import { Input } from "@/shared/components/ui/input"
 import { Button } from "@/shared/components/ui/button"
 import { Separator } from "@/shared/components/ui/separator"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group"
+
 import { CheckoutButton } from "./checkout-button"
-import { defaultValues } from "@/shared/config/defaults"
+import { CreateUserAddressModal } from "@/features/address/ui/create-modal"
 
 type Props = {
   addresses: FullAddress[]
@@ -26,69 +30,159 @@ type Props = {
 export const CheckoutHandler = ({ addresses, defaultAddress }: Props) => {
   const t = useTranslations()
 
-  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(defaultAddress ? defaultAddress.id : null)
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(defaultAddress?.id ?? null)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodTypeEnum>("Cash")
+  const [couponCode, setCouponCode] = useState<string>("")
+
+  const { items, getTotal } = useCartStore()
+  const { coupon, isCheckCouponLoading, isCheckCouponRefetching, refetchCheckCoupon } = useCheckCoupon(couponCode)
+
+  // Applied coupon (only applied manually)
+  const [appliedCoupon, setAppliedCoupon] = useState<typeof coupon | null>(null)
 
   const address = addresses.find((addr) => addr.id === selectedAddressId)
 
-  const { items, getTotal } = useCartStore()
+  // APPLY COUPON BUTTON HANDLER
+  const handleApplyCoupon = async () => {
+    const result = await refetchCheckCoupon()
+
+    if (result.data) {
+      setAppliedCoupon(result.data)
+    }
+  }
+
+  // REMOVE COUPON BUTTON HANDLER
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null)
+    setCouponCode("")
+  }
+
+  // ---- Derived Calculations ----
+  const deliveryFees = useMemo(() => {
+    if (!address) return 0
+    return safeParseNumber(address.city.price + address.country.price, appConfig.defaultDeliveryFees)
+  }, [address])
+
+  const subtotalAfterDiscount = useMemo(() => {
+    const total = getTotal()
+    return appliedCoupon ? total - (total * appliedCoupon.discount) / 100 : total
+  }, [appliedCoupon, getTotal])
+
+  const totalAmount = useMemo(() => {
+    return subtotalAfterDiscount + deliveryFees
+  }, [subtotalAfterDiscount, deliveryFees])
 
   return (
     <div className='space-y-4'>
+      {/* Order Summary */}
       <div className='bg-white p-4 rounded-md shadow-md'>
         <p className='border-b text-xl font-semibold mb-4'>{t("Order Summary")}</p>
+
         <ul className='space-y-2'>
           <li className='flex justify-between'>
             <span>{t("Items")}:</span>
             <span>{items.length}</span>
           </li>
+
           <li className='flex justify-between'>
-            <span>{t("Total Amount")}:</span>
+            <span>{t("Total Before")}:</span>
             <span className='text-green-700 font-semibold'>{formatCurrency(getTotal())}</span>
           </li>
+
+          {appliedCoupon && (
+            <li className='flex justify-between'>
+              <span>
+                {t("Coupon Discount")} ({appliedCoupon.name} - {appliedCoupon.discount}%):
+              </span>
+              <span className='text-green-700 font-semibold'>- {formatCurrency((getTotal() * appliedCoupon.discount) / 100)}</span>
+            </li>
+          )}
+
+          <li className='flex justify-between'>
+            <span>{t("Sub Total")}:</span>
+            <span className='text-green-700 font-semibold'>{formatCurrency(subtotalAfterDiscount)}</span>
+          </li>
+
           {address && (
             <li className='flex justify-between'>
               <span>{t("Delivery Fees")}:</span>
-              <span className='text-green-700 font-semibold'>{formatCurrency(safeParseNumber(address.city.price + address.country.price, defaultValues.defaultDeliveryFees))}</span>
+              <span className='text-green-700 font-semibold'>{formatCurrency(deliveryFees)}</span>
             </li>
           )}
+
+          <li className='flex justify-between'>
+            <span>{t("Total Amount")}:</span>
+            <span className='text-green-700 font-semibold'>{formatCurrency(totalAmount)}</span>
+          </li>
         </ul>
       </div>
 
+      {/* Address Section */}
       {addresses.length === 0 ? (
-        <div className='space-y-2 bg-white p-4 rounded-md shadow-md'>
+        <div className='bg-white p-4 rounded-md shadow-md space-y-2'>
           <p>{t("No shipping addresses found. Please add an address to proceed with checkout.")}</p>
           <CreateUserAddressModal />
         </div>
       ) : (
-        <div className='space-y-2 bg-white p-4 rounded-md shadow-md'>
+        <div className='bg-white p-4 rounded-md shadow-md space-y-3'>
           <p className='border-b text-xl font-semibold mb-4'>{t("Shipping Address")}</p>
-          <div className='space-y-2'>
-            <Label>{t("Shipping Address")}</Label>
-            <Select onValueChange={(value) => setSelectedAddressId(Number(value))} defaultValue={selectedAddressId ? String(selectedAddressId) : undefined}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("Address")} />
-              </SelectTrigger>
-              <SelectContent>
-                {addresses.map((address) => (
-                  <SelectItem key={address.id} value={String(address.id)}>
-                    {address.streetName}, {address.city.name}, {address.country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+
+          <Label>{t("Shipping Address")}</Label>
+
+          <Select onValueChange={(value) => setSelectedAddressId(Number(value))} defaultValue={selectedAddressId?.toString()}>
+            <SelectTrigger>
+              <SelectValue placeholder={t("Address")} />
+            </SelectTrigger>
+
+            <SelectContent>
+              {addresses.map((addr) => (
+                <SelectItem key={addr.id} value={String(addr.id)}>
+                  {addr.streetName}, {addr.city.name}, {addr.country.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
 
-      <div className='space-y-2 bg-white p-4 rounded-md shadow-md'>
+      {/* Coupon Section */}
+      <div className='bg-white p-4 rounded-md shadow-md space-y-2'>
+        <p className='border-b text-xl font-semibold mb-4'>{t("Coupon")}</p>
+
+        <div className='flex gap-2'>
+          <Input type='text' placeholder={t("Enter coupon code")} value={couponCode} onChange={(e) => setCouponCode(e.target.value)} disabled={!!appliedCoupon} />
+
+          {!appliedCoupon ? (
+            <Button disabled={isCheckCouponLoading || isCheckCouponRefetching || couponCode.length === 0} onClick={handleApplyCoupon}>
+              {isCheckCouponLoading || isCheckCouponRefetching ? t("Checking...") : t("Apply")}
+            </Button>
+          ) : (
+            <Button variant='destructive' onClick={handleRemoveCoupon}>
+              {t("Remove")}
+            </Button>
+          )}
+        </div>
+
+        {appliedCoupon ? (
+          <p className='text-green-600'>
+            {t("Coupon applied")}: <b>{appliedCoupon.name}</b> - <b>{appliedCoupon.discount}%</b>
+          </p>
+        ) : (
+          couponCode.length > 0 && !coupon && <p className='text-red-600'>{t("Invalid coupon code")}</p>
+        )}
+      </div>
+
+      {/* Payment Section */}
+      <div className='bg-white p-4 rounded-md shadow-md space-y-2'>
         <p className='border-b text-xl font-semibold mb-4'>{t("Payment Method")}</p>
+
         <RadioGroup defaultValue={paymentMethod} onValueChange={(value) => setPaymentMethod(value as PaymentMethodTypeEnum)} className='space-y-2'>
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center gap-2'>
             <RadioGroupItem value='Card' id='Card' />
             <Label htmlFor='Card'>{t("Card")}</Label>
           </div>
-          <div className='flex items-center space-x-2'>
+
+          <div className='flex items-center gap-2'>
             <RadioGroupItem value='Cash' id='Cash' />
             <Label htmlFor='Cash'>{t("Cash on Delivery")}</Label>
           </div>
@@ -96,7 +190,17 @@ export const CheckoutHandler = ({ addresses, defaultAddress }: Props) => {
 
         <Separator className='my-4' />
 
-        {address && <CheckoutButton deliveryFees={safeParseNumber(address.city.price + address.country.price, defaultValues.defaultDeliveryFees)} selectedAddressId={selectedAddressId} paymentMethod={paymentMethod} />}
+        {address && (
+          <CheckoutButton
+            appliedCoupon={{
+              name: appliedCoupon?.name ?? "",
+              discount: appliedCoupon?.discount ?? 0
+            }}
+            deliveryFees={deliveryFees}
+            selectedAddressId={selectedAddressId}
+            paymentMethod={paymentMethod}
+          />
+        )}
       </div>
     </div>
   )

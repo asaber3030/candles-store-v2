@@ -50,7 +50,7 @@ export const LoginForm = ({ hideForgetPassword = false, type = "user", redirectU
         <div>
           <PasswordField control={form.control} name='password' type='password' label={t("Password")} placeholder={t("Password")} />
           {!hideForgetPassword && (
-            <Link href='/forgot-password' className='text-sm text-primary hover:underline flex justify-end '>
+            <Link href='/forget-password' className='text-sm text-primary hover:underline flex justify-end '>
               {t("Forgot Password?")}
             </Link>
           )}

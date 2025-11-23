@@ -1,4 +1,4 @@
-import { Order, OrderItem, Product, User, Coupon } from "@prisma/client"
+import { Order, OrderItem, Product, User, Coupon, ProductSize, ProductColor } from "@prisma/client"
 import { FullAddress } from "@/entities/user/model/user"
 
 export type FullOrder = Order & {
@@ -11,4 +11,6 @@ export type FullOrder = Order & {
 
 export type FullOrderItem = OrderItem & {
   product: Product
+  size?: ProductSize | null
+  color?: ProductColor | null
 }

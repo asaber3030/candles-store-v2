@@ -20,7 +20,7 @@ export function useCountries(sp: TObject = {}) {
 
 export function useAllCountries(sp: TObject = {}) {
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: queryKeys.countries.index(sp),
+    queryKey: queryKeys.countries.all(sp),
     queryFn: ({ queryKey }) => getAllCountries(queryKey[3] as TObject)
   })
 

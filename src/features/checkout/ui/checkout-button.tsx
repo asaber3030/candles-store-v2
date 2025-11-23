@@ -12,6 +12,7 @@ import { userRoutes } from "@/shared/config/routes"
 import { toast } from "react-toastify"
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
+
 import { PaymentMethodTypeEnum } from "@prisma/client"
 import { CartItem } from "@/features/cart/model/cart"
 import { Button } from "@/shared/components/ui/button"
@@ -20,23 +21,30 @@ type Props = {
   selectedAddressId: number | null
   deliveryFees: number
   paymentMethod: PaymentMethodTypeEnum
+  appliedCoupon: { name: string; discount: number } | null | undefined
 }
 
 type Mut = {
   addressId: number
   data: CartItem[]
+  couponCode?: string
 }
 
-export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod }: Props) => {
+export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod, appliedCoupon }: Props) => {
   const [open, setOpen] = useState(false)
 
   const router = useRouter()
   const t = useTranslations()
-
   const { items, getTotal, clearCart } = useCartStore()
 
+  const couponCode = appliedCoupon?.name || "" // Extract final coupon code
+
+  const subtotal = getTotal()
+  const discountAmount = appliedCoupon ? (subtotal * appliedCoupon.discount) / 100 : 0
+  const finalTotal = subtotal - discountAmount + deliveryFees
+
   const createOnlineOrder = useDefaultMutation({
-    mutationFn: ({ addressId, data }: Mut) => createOnlineOrderAction(addressId, data),
+    mutationFn: ({ addressId, data, couponCode }: Mut) => createOnlineOrderAction(addressId, data, couponCode),
     onSuccess: (data: ApiResponse<{ orderId: number; paymentUrl: string }>) => {
       if (data?.data?.orderId && data?.data?.paymentUrl && data.status === 201) {
         setOpen(false)
@@ -47,7 +55,7 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod 
   })
 
   const createCashOrder = useDefaultMutation({
-    mutationFn: ({ addressId, data }: Mut) => createCashOrderAction(addressId, data),
+    mutationFn: ({ addressId, data, couponCode }: Mut) => createCashOrderAction(addressId, data, couponCode),
     onSuccess: (data: ApiResponse<{ orderId: number }>) => {
       if (data?.data?.orderId && data.status == 201) {
         setOpen(false)
@@ -64,9 +72,17 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod 
     }
 
     if (paymentMethod === PaymentMethodTypeEnum.Card) {
-      createOnlineOrder.mutate({ addressId: selectedAddressId, data: items })
+      createOnlineOrder.mutate({
+        addressId: selectedAddressId,
+        data: items,
+        couponCode
+      })
     } else if (paymentMethod === PaymentMethodTypeEnum.Cash) {
-      createCashOrder.mutate({ addressId: selectedAddressId, data: items })
+      createCashOrder.mutate({
+        addressId: selectedAddressId,
+        data: items,
+        couponCode
+      })
     } else {
       toast.error(t("Please select a valid payment method"))
     }
@@ -85,6 +101,7 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod 
       <DialogTrigger asChild>
         <Button className='w-full'>{t("Checkout")}</Button>
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("Complete your Order")}</DialogTitle>
@@ -96,17 +113,29 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod 
               <span>{t("Items")}:</span>
               <span>{items.length}</span>
             </li>
+
             <li className='flex justify-between'>
               <span>{t("Sub Total")}:</span>
-              <span className='text-green-700 font-semibold'>{formatCurrency(getTotal())}</span>
+              <span className='text-green-700 font-semibold'>{formatCurrency(subtotal)}</span>
             </li>
+
+            {appliedCoupon && (
+              <li className='flex justify-between'>
+                <span>
+                  {t("Coupon Discount")} ({appliedCoupon.name} - {appliedCoupon.discount}%):
+                </span>
+                <span className='text-green-700 font-semibold'>- {formatCurrency(discountAmount)}</span>
+              </li>
+            )}
+
             <li className='flex justify-between'>
               <span>{t("Delivery Fees")}:</span>
               <span className='text-green-700 font-semibold'>{formatCurrency(deliveryFees)}</span>
             </li>
-            <li className='flex justify-between'>
-              <span>{t("Total Amount")}:</span>
-              <span className='text-green-700 font-semibold'>{formatCurrency(getTotal() + deliveryFees)}</span>
+
+            <li className='flex justify-between border-t pt-2'>
+              <span className='font-semibold'>{t("Total Amount")}:</span>
+              <span className='text-green-700 font-bold'>{formatCurrency(finalTotal)}</span>
             </li>
           </ul>
         </section>

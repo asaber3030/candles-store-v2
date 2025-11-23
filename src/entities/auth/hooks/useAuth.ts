@@ -15,7 +15,8 @@ import { queryKeys } from "@/shared/config/query-keys"
 export function useCurrentUser() {
   const { data, isLoading, isRefetching, refetch } = useQuery({
     queryKey: queryKeys.currentUser,
-    queryFn: () => getCurrentUser()
+    queryFn: () => getCurrentUser(),
+    retry: 2
   })
 
   return { user: data, isUserLoading: isLoading || isRefetching, refetchCurrentUser: refetch }

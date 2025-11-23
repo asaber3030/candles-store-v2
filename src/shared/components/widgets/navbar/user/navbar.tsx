@@ -3,6 +3,7 @@
 import AppLogo from "@/shared/components/common/logo"
 
 import { useLocale, useTranslations } from "next-intl"
+import { useFavouritesStore } from "@/features/favourites/model/favourite.store"
 import { useCurrentUser } from "@/entities/auth/hooks/useAuth"
 import { useContext } from "react"
 
@@ -17,6 +18,8 @@ import { LanguageSwitcher } from "@/shared/components/common/language-switcher"
 import { NavbarItem } from "./navbar-item"
 import { CartDrawer } from "@/features/cart/ui/drawer"
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import { LinkBtn } from "@/shared/components/common/link-button"
+import { HeartIcon } from "lucide-react"
 
 export const AppNavbar = () => {
   const settings = useContext(AppSettingsContext)
@@ -24,6 +27,7 @@ export const AppNavbar = () => {
   const t = useTranslations()
 
   const { user, isUserLoading } = useCurrentUser()
+  const { favourites } = useFavouritesStore()
 
   return (
     <nav className='w-full border-b py-2 shadow-md bg-white hidden xl:block'>
@@ -40,6 +44,11 @@ export const AppNavbar = () => {
         <div className='flex gap-2 items-center'>
           <CartDrawer />
           <LanguageSwitcher />
+          <div className={cn("relative")}>
+            <LinkBtn href={userRoutes.favourites} size='icon' icon={HeartIcon} variant='outlineDestructive' className='h-10 w-10 text-red-600' />
+            <span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full'>{favourites.length}</span>
+          </div>
+
           {isUserLoading ? (
             <LoadingButtons />
           ) : !user ? (

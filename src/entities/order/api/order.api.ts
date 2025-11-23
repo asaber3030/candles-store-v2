@@ -190,6 +190,7 @@ export async function getCurrentCompanyOrders(sp: TObject = {}) {
     let where: Prisma.OrderWhereInput = { companyId: company.id }
 
     if (sp.status && OrderStatusList.includes(sp.status)) where.status = sp.status as OrderStatusEnum
+    if (sp.notDelivered === "yes") where.deliveredAt = null
 
     const orders = await prisma.order.findMany({
       take: pageSize,
@@ -371,7 +372,7 @@ export async function calculateOrderTotal(items: CartItem[]) {
   }
 }
 
-export async function createOnlineOrderAction(addressId: number, items: CartItem[]) {
+export async function createOnlineOrderAction(addressId: number, items: CartItem[], couponCode?: string) {
   try {
     const hasAnOrder = await prisma.order.findFirst({
       where: { deliveredAt: null, status: { not: { in: [OrderStatusEnum.Canceled, OrderStatusEnum.Refused] } } }
@@ -411,16 +412,54 @@ export async function createOnlineOrderAction(addressId: number, items: CartItem
       })
     }
 
+    let discountValue = 0
+    let couponId = null
+
     const deliveryValue = address.country.price + address.city.price
     totalAmount += deliveryValue
+
+    if (couponCode) {
+      const coupon = await prisma.coupon.findFirst({
+        where: { name: couponCode, deletedAt: null }
+      })
+      if (coupon) {
+        couponId = coupon.id
+        if (!coupon.active) {
+          return actionResponse({
+            status: 400,
+            message: "Coupon has expired"
+          })
+        }
+        if (coupon.usages == 0) {
+          return actionResponse({
+            status: 400,
+            message: "Coupon usage limit reached"
+          })
+        }
+        discountValue = (coupon.discount / 100) * totalAmount
+        totalAmount -= discountValue
+
+        await prisma.coupon.update({
+          where: { id: coupon.id },
+          data: { usages: { decrement: 1 } }
+        })
+      } else {
+        return actionResponse({
+          status: 404,
+          message: "Coupon not found"
+        })
+      }
+    }
 
     const order = await prisma.order.create({
       data: {
         userId: user.id,
         subTotal: totalAmount - deliveryValue,
         addressId: address.id,
+        couponId,
         total: totalAmount,
         paymentMethod: "Card",
+        discountValue: discountValue,
         deliveryValue: deliveryValue
       }
     })
@@ -516,7 +555,7 @@ export async function createOnlineOrderAction(addressId: number, items: CartItem
   }
 }
 
-export async function createCashOrderAction(addressId: number, items: CartItem[]) {
+export async function createCashOrderAction(addressId: number, items: CartItem[], couponCode?: string) {
   try {
     const hasAnOrder = await prisma.order.findFirst({
       where: { deliveredAt: null, status: { not: { in: [OrderStatusEnum.Canceled, OrderStatusEnum.Refused] } } }
@@ -556,15 +595,53 @@ export async function createCashOrderAction(addressId: number, items: CartItem[]
       })
     }
 
+    let discountValue = 0
+    let couponId = null
+
     const deliveryValue = address.country.price + address.city.price
     totalAmount += deliveryValue
+
+    if (couponCode) {
+      const coupon = await prisma.coupon.findFirst({
+        where: { name: couponCode, deletedAt: null }
+      })
+      if (coupon) {
+        couponId = coupon.id
+        if (!coupon.active) {
+          return actionResponse({
+            status: 400,
+            message: "Coupon has expired"
+          })
+        }
+        if (coupon.usages == 0) {
+          return actionResponse({
+            status: 400,
+            message: "Coupon usage limit reached"
+          })
+        }
+        discountValue = (coupon.discount / 100) * totalAmount
+        totalAmount -= discountValue
+
+        await prisma.coupon.update({
+          where: { id: coupon.id },
+          data: { usages: { decrement: 1 } }
+        })
+      } else {
+        return actionResponse({
+          status: 404,
+          message: "Coupon not found"
+        })
+      }
+    }
 
     const order = await prisma.order.create({
       data: {
         userId: user.id,
         subTotal: totalAmount - deliveryValue,
         addressId: address.id,
+        couponId,
         total: totalAmount,
+        discountValue: discountValue,
         paymentMethod: "Cash",
         deliveryValue: deliveryValue
       }

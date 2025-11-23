@@ -389,7 +389,7 @@
   },
   "productsPage": {
     "hero": {
-      "title": "اكتشف عطرك المثالي",
+      "title": "اكتشف شمعك المثالي",
       "subtitle": "شموع مصنوعة يدويًا تحول أي مساحة إلى ملاذ",
       "badge": "مجموعة جديدة"
     }
@@ -409,11 +409,34 @@
   "Search categories": "ابحث في الفئات...",
   "# products": "{count} منتج",
   "Try adjusting your search or create a new category": "حاول تعديل بحثك أو إنشاء فئة جديدة",
-
   "Delivery Fees": "رسوم التوصيل",
   "Total Incoming": "اجمالي الوارد",
   "Total Earned": "إجمالي المكتسب",
   "Delivered Orders": "الطلبات التي تم توصيلها",
   "Details": "تفاصيل",
-  "Change Password": "تغيير كلمة المرور"
+  "Change Password": "تغيير كلمة المرور",
+  "Category Image": "صورة الفئة",
+  "Favourites Title": "منتجاتك المفضلة",
+  "Review your selected products": "راجع المنتجات التي اخترتها.",
+  "Total #": "الإجمالي: {value}",
+  "Enter coupon code": "أدخل كود الخصم",
+  "Coupon applied": "تم تطبيق الكود بنجاح!",
+  "Coupon Discount": "خصم الكوبون",
+  "Total Before": "الإجمالي قبل الخصم",
+  "Favourites No Data Title": "لم تقم بإضافة أي منتجات إلى المفضلة بعد.",
+  "Send Reset Link": "إرسال رابط إعادة التعيين",
+  "Forget Password": "نسيت كلمة المرور",
+  "Password Confirmation": "تأكيد كلمة المرور",
+  "Admin Dashboard": "لوحة تحكم المشرف",
+  "Delivery Company Dashboard": "لوحة تحكم شركة التوصيل",
+
+  "Loading Invoice": "جاري تحميل الفاتورة...",
+  "Generating PDF": "جاري إنشاء ملف PDF...",
+  "Download Invoice": "تحميل الفاتورة",
+  "Street Name / Street No": "اسم الشارع / رقم الشارع",
+
+  "In Stock?": "متوفر في المخزون؟",
+  "Picture": "الصورة",
+  "Icon": "الأيقونة",
+  "Delivered At": "تم التوصيل في"
 }

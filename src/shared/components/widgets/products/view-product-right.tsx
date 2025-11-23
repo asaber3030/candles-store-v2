@@ -82,9 +82,13 @@ export const ViewProductRightSide = ({ details, colors, sizes }: Props) => {
         </div>
       )}
 
-      <div className='flex flex-wrap gap-2 mt-4'>
-        <AddToCartButton executeFunction={afterCleanup} product={details} color={selectedColor} size={selectedSize} />
-        <AddToFavouriteButton product={details} />
+      <div className='grid grid-cols-7 flex-wrap gap-2 mt-4'>
+        <div className='col-span-6'>
+          <AddToCartButton executeFunction={afterCleanup} product={details} color={selectedColor} size={selectedSize} />
+        </div>
+        <div className='col-span-1'>
+          <AddToFavouriteButton className='w-full' product={details} />
+        </div>
       </div>
     </div>
   )

@@ -5,8 +5,8 @@ import localeConfig from "@/shared/config/services/locale.config"
 
 export default getRequestConfig(async () => {
   const store = await cookies()
-  const language = store.get(localeConfig.cookieName)?.value || "en"
-  const locale = localeConfig.supportedLocales.includes(language) ? language : "en"
+  const language = store.get(localeConfig.cookieName)?.value || localeConfig.defaultLocale
+  const locale = localeConfig.supportedLocales.includes(language) ? language : localeConfig.defaultLocale
 
   return {
     locale,

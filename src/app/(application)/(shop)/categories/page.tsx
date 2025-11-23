@@ -2,24 +2,28 @@
 
 import Link from "next/link"
 
-import React, { useState } from "react"
-import { Edit2, Trash2, Search, Grid, List, Package } from "lucide-react"
-import { Input } from "@/shared/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card"
-import { Badge } from "@/shared/components/ui/badge"
 import { useAllCategories } from "@/entities/category/hooks/useCategories"
-import { useTranslations } from "next-intl"
-import { userRoutes } from "@/shared/config/routes"
+import { useLocale, useTranslations } from "next-intl"
+import { useState } from "react"
 import { useDebounce } from "use-debounce"
-import { Loading } from "@/shared/components/common/loader"
+
+import { userRoutes } from "@/shared/config/routes"
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import { Search, Grid, List, Package } from "lucide-react"
 import { DefaultContainer } from "@/shared/components/common/default-container"
+import { Loading } from "@/shared/components/common/loader"
+import { Input } from "@/shared/components/ui/input"
+import { Badge } from "@/shared/components/ui/badge"
 
 export default function CategoriesPage() {
   const [viewMode, setViewMode] = useState("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [debounded] = useDebounce(searchQuery, 300)
   const { categories, isCategoriesLoading } = useAllCategories({ search: debounded })
+
   const t = useTranslations()
+  const locale = useLocale()
 
   return (
     <div className='min-h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800'>
@@ -109,7 +113,7 @@ export default function CategoriesPage() {
             {viewMode === "grid" ? (
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                 {categories?.map((category) => (
-                  <Link href={userRoutes.categories.single(category.id)}>
+                  <Link key={`category-item-${category.id}`} href={userRoutes.categories.single(category.id)}>
                     <Card key={category.id} className='group hover:shadow-lg transition-all duration-300 hover:-translate-y-1'>
                       <CardHeader className='pb-3'>
                         <div className='flex items-start justify-between'>
@@ -117,7 +121,7 @@ export default function CategoriesPage() {
                             <img src={category.icon} alt='Category Icon' className='w-full h-full' />
                           </div>
                         </div>
-                        <CardTitle className='text-xl'>{category.name}</CardTitle>
+                        <CardTitle className='text-xl'>{(locale == "ar" ? category.nameAr : category.name) || category.name}</CardTitle>
                         <CardDescription>{category.description}</CardDescription>
                       </CardHeader>
                       <CardContent>

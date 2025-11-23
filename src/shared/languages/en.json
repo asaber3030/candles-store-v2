@@ -344,7 +344,7 @@
     },
     "journey": {
       "title": "The Journey",
-      "content": "Founded in 2018, SharkiaCandles began in a small studio with a simple mission: to create candles that transform spaces into sanctuaries. What started as a passion project has grown into a beloved brand, but our commitment to quality and authenticity remains unchanged."
+      "content": "Founded in 2018, Sharkia Candles began in a small studio with a simple mission: to create candles that transform spaces into sanctuaries. What started as a passion project has grown into a beloved brand, but our commitment to quality and authenticity remains unchanged."
     },
     "mission": {
       "title": "Our Mission",
@@ -394,13 +394,13 @@
     },
     "cta": {
       "title": "Experience the Difference",
-      "subtitle": "Join thousands who have made SharkiaCandles part of their daily ritual",
+      "subtitle": "Join thousands who have made Sharkia Candles part of their daily ritual",
       "button": "Shop Now"
     }
   },
   "productsPage": {
     "hero": {
-      "title": "Discover Your Perfect Scent",
+      "title": "Discover Your Perfect Candles",
       "subtitle": "Handcrafted candles that transform any space into a sanctuary",
       "badge": "New Collection"
     }
@@ -413,20 +413,41 @@
   "Search products": "Search products...",
   "Search": "Search",
   "No products found": "No products found.",
-
-  "SharkiaCandles Categories": "SharkiaCandles Categories",
+  "SharkiaCandles Categories": "Sharkia Candles Categories",
   "Organize Your": "Organize Your",
   "Space": "Space",
   "See all different types of categories of candles": "See all different types of categories  of candles",
   "Search categories": "Search categories...",
   "# products": "{count} products",
   "Try adjusting your search or create a new category": "Try adjusting your search or create a new category",
-
   "Delivery Fees": "Delivery Fees",
   "Total Incoming": "Total Incoming",
   "Total Earned": "Total Earned",
   "Delivered Orders": "Delivered Orders",
   "Details": "Details",
   "Change Password": "Change Password",
-  "Category Image": "Category Image"
+  "Category Image": "Category Image",
+  "Favourites Title": "Your Favourite Products",
+  "Review your selected products": "Review your selected products.",
+  "Total #": "Total: {value}",
+  "Enter coupon code": "Enter coupon code",
+  "Coupon applied": "Coupon applied successfully!",
+  "Coupon Discount": "Coupon Discount",
+  "Total Before": "Total Before Discount",
+  "Favourites No Data Title": "You have no favourite products yet.",
+  "Send Reset Link": "Send Reset Link",
+  "Forget Password": "Forget Password",
+  "Password Confirmation": "Password Confirmation",
+  "Admin Dashboard": "Admin Dashboard",
+  "Delivery Company Dashboard": "Delivery Company Dashboard",
+
+  "Loading Invoice": "Loading Invoice",
+  "Generating PDF": "Generating PDF",
+  "Download Invoice": "Download Invoice",
+  "Street Name / Street No": "Street Name / Street No.",
+
+  "In Stock?": "In Stock?",
+  "Picture": "Picture",
+  "Icon": "Icon",
+  "Delivered At": "Delivered At"
 }

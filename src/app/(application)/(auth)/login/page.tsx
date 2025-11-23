@@ -10,7 +10,7 @@ import { userRoutes } from "@/shared/config/routes"
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "Login to Sharkiacandles shop."
+  description: "Login to Sharkia Candles shop."
 }
 
 export default async function LoginPage() {

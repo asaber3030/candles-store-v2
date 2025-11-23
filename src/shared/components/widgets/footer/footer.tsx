@@ -1,11 +1,12 @@
 "use client"
 
+import appConfig from "@/shared/config/defaults/app"
+
 import Link from "next/link"
 
 import { useLocale, useTranslations } from "next-intl"
 import { useContext } from "react"
 
-import { defaultValues } from "@/shared/config/defaults"
 import { userRoutes } from "@/shared/config/routes"
 
 import { Facebook, Instagram, Locate, MailIcon, PhoneIcon } from "lucide-react"
@@ -16,6 +17,7 @@ export function AppFooter() {
   const t = useTranslations()
   const settings = useContext(AppSettingsContext)
   const locale = useLocale()
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className='w-full bg-card border-t border-border'>
@@ -49,24 +51,24 @@ export function AppFooter() {
           </div>
 
           <div>
-            <h4 className='font-semibold text-foreground mb-4'>{settings?.siteName || defaultValues.appName}</h4>
+            <h4 className='font-semibold text-foreground mb-4'>{settings?.siteName || appConfig.appName}</h4>
             <ul className='space-y-2'>
               <li>
-                <p className='text-muted-foreground text-sm'>{locale == "ar" ? settings?.arDescription || defaultValues.appDescription : settings?.description || defaultValues.appDescription}</p>
+                <p className='text-muted-foreground text-sm'>{locale == "ar" ? settings?.arDescription || appConfig.appDescription : settings?.description || appConfig.appDescription}</p>
               </li>
               <li>
                 <p className='text-muted-foreground text-sm flex gap-2 items-center'>
-                  <MailIcon className='size-4' /> {settings?.email || defaultValues.defaultEmail}
+                  <MailIcon className='size-4' /> {settings?.email || appConfig.defaultEmail}
                 </p>
               </li>
               <li>
                 <p className='text-muted-foreground text-sm flex gap-2 items-center'>
-                  <PhoneIcon className='size-4' /> {settings?.phoneNumber || defaultValues.defaultNumber}
+                  <PhoneIcon className='size-4' /> {settings?.phoneNumber || appConfig.defaultNumber}
                 </p>
               </li>
               <li>
                 <p className='text-muted-foreground text-sm flex gap-2 items-center'>
-                  <Locate className='size-4' /> {settings?.address || defaultValues.defaultAddress}
+                  <Locate className='size-4' /> {settings?.address || appConfig.defaultAddress}
                 </p>
               </li>
             </ul>
@@ -75,12 +77,12 @@ export function AppFooter() {
           <div>
             <h4 className='font-semibold text-foreground mb-4'>{t("Follow Us")}</h4>
             <div className='flex gap-4'>
-              <a target='_blank' href='#' className='text-muted-foreground hover:text-primary transition-colors flex items-center gap-2'>
+              <a target='_blank' href={settings?.instagram || "#"} className='text-muted-foreground hover:text-primary transition-colors flex items-center gap-2'>
                 <Instagram className='h-4 w-4' />
                 Instagram
               </a>
 
-              <a target='_blank' href='#' className='text-muted-foreground hover:text-primary transition-colors flex items-center gap-2'>
+              <a target='_blank' href={settings?.facebook || "#"} className='text-muted-foreground hover:text-primary transition-colors flex items-center gap-2'>
                 <Facebook className='h-4 w-4' />
                 Facebook
               </a>
@@ -91,7 +93,7 @@ export function AppFooter() {
         {/* Copyright */}
         <div className='text-center pt-8 border-t border-border'>
           <p className='text-sm text-muted-foreground'>
-            &copy; 2025 {settings?.siteName || defaultValues.appName}. {t("footer.copyright")}.
+            &copy; {currentYear} {settings?.siteName || appConfig.appName}. {t("footer.copyright")}.
           </p>
         </div>
       </DefaultContainer>

@@ -1,3 +1,4 @@
+import { DownloadOrderInvoiceBtn } from "@/features/admin/orders/ui/download-pdf"
 import { UpdateOrderButton } from "@/features/deliveryCompany/orders/ui/view/update-order-button"
 import { ViewOrderDetails } from "@/features/deliveryCompany/orders/ui/view/view-order"
 import { PageTitle } from "@/shared/components/common/page-title"
@@ -25,6 +26,7 @@ export default async function ViewOrderDetailsPage({ params }: Props) {
     <div>
       <PageTitle title={t("Order # Details", { orderNumber: orderId })}>
         <UpdateOrderButton orderId={order.id} status={order.status} statusNumber={order.statusNumber} />
+        <DownloadOrderInvoiceBtn order={order} />
       </PageTitle>
       <ViewOrderDetails order={order} />
     </div>

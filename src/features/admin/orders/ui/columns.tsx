@@ -70,11 +70,7 @@ export const OrdersColumns: ColumnDef<FullOrder>[] = [
     header: "Delivered At",
     cell: ({ row }) => (row.getValue("deliveredAt") ? diffForHumans(row.getValue("deliveredAt")) : "N/A")
   },
-  {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: ({ row }) => diffForHumans(row.getValue("createdAt"))
-  },
+
   {
     id: "actions",
     header: "Actions",

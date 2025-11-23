@@ -6,7 +6,8 @@ type Props = { settings: Settings }
 export const ViewSettingsCard = ({ settings: data }: Props) => {
   return (
     <div className='w-full max-w-md'>
-      <img src={data.defaultBanner} alt='Banner' className='w-full object-cover rounded-2xl mb-4' />
+      {!!data.defaultBanner && <img src={data.defaultBanner} alt='Banner' className='w-full object-cover rounded-2xl mb-4' />}
+
       {/* Main Card */}
       <div className='bg-card rounded-2xl shadow-2xl overflow-hidden border border-border'>
         {/* Logo Section */}

@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/shared/api/prisma"
+import appConfig from "@/shared/config/defaults/app"
 
 import { Product } from "@/shared/models/product.model"
 import { Prisma } from "@prisma/client"
@@ -11,7 +12,6 @@ import { ZodError } from "zod"
 import { deleteFromCloudinary, uploadToCloudinary } from "@/shared/api/cloudinary"
 import { createPaginatedResponse, extractCloudinaryPublicId } from "@/shared/lib/functions"
 import { actionResponse } from "@/shared/lib/api"
-import { defaultValues } from "@/shared/config/defaults"
 import { revalidatePath } from "next/cache"
 import { adminRoutes, userRoutes } from "@/shared/config/routes"
 import { generateSKU, slugify } from "@/shared/lib/strings"
@@ -456,7 +456,7 @@ export async function createProductPictureAction(productId: number, file: File |
         message: "No file provided"
       })
     }
-    if (file.size > defaultValues.maxUploadFileSize) {
+    if (file.size > appConfig.maxUploadFileSize) {
       return actionResponse({
         status: 400,
         message: "File size exceeds 5MB limit"

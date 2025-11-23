@@ -19,18 +19,19 @@ type Props = {
 export const ProductCard = ({ product }: Props) => {
   return (
     <div className='bg-white rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300'>
-      <Link href={userRoutes.products.viewBySlug(product.slug)} className='h-72 relative group overflow-hidden block'>
-        <img className='object-cover w-full h-full transition-transform duration-300 group-hover:scale-105' src={product.picture} />
+      <div className='h-90 relative group overflow-hidden block'>
+        <Link href={userRoutes.products.viewBySlug(product.slug)}>
+          <img className='object-cover w-full h-full transition-transform duration-300 group-hover:scale-105' src={product.picture} />
+        </Link>
 
         <div className='absolute flex gap-2 top-2 right-2 rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
           <AddToFavouriteButton product={product} />
-          <Button icon={Fullscreen} variant='outline' size='icon' />
         </div>
-      </Link>
+      </div>
 
       <section className='p-4 rounded-md space-y-2'>
         <div>
-          <Link href={userRoutes.products.viewBySlug(product.slug)} className='max-w-full truncate'>
+          <Link href={userRoutes.products.viewBySlug(product.slug)} className='max-w-full truncate text-ellipsis hover:underline hover:text-blue-600'>
             {product.name}
           </Link>
           <p className='text-green-700 font-semibold'>{formatCurrency(product.price || 0)}</p>

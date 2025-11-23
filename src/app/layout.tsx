@@ -20,8 +20,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages()
   const settings = await getAppSettings()
 
-  //console.log('Bcrypt test hash for "password123":', await bcrypt.hash("0552320541", 10))
-
   return (
     <html lang={locale} dir={loadPageDirection(locale)}>
       <body className={loadFont(locale)}>

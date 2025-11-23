@@ -1,5 +1,3 @@
-import { diffForHumans } from "@/shared/lib/date"
-
 import { UpdateCountryModal } from "./update-modal"
 import { ColumnDef } from "@tanstack/react-table"
 import { Country } from "@prisma/client"

@@ -95,10 +95,12 @@ export const UpdateUserAddressModal = ({ address }: { address: Address }) => {
                 label={t("Country")}
                 control={form.control}
                 options={
-                  countries?.map((country) => ({
-                    label: country.name,
-                    value: country.id.toString()
-                  })) || []
+                  (countries &&
+                    countries?.map((country) => ({
+                      label: country.name,
+                      value: country.id.toString()
+                    }))) ||
+                  []
                 }
               />
             )}

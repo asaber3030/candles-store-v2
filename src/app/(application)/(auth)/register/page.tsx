@@ -11,7 +11,7 @@ import { RegisterForm } from "@/features/auth/ui/register-form"
 
 export const metadata: Metadata = {
   title: "Register",
-  description: "Register to Sharkiacandles shop."
+  description: "Register to Sharkia Candles shop."
 }
 
 export default async function RegisterPage() {
