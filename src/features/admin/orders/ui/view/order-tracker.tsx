@@ -42,7 +42,7 @@ export function AdminOrderTracker({ currentStatus = OrderStatusEnum.JustOrdered 
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full ${isCompleted || isCurrent ? (isRefusedOrCanceled ? "bg-red-200 text-red-600" : "bg-primary text-primary-foreground") : "bg-gray-200 text-gray-600"}`} aria-current={isCurrent ? "step" : undefined}>
                   {getStatusIcon(status)}
                 </div>
-                <span className={`mt-2 text-xs ${isCurrent ? "font-medium" : "font-normal"} ${isRefusedOrCanceled ? "text-red-600" : "text-gray-700"}`}>{status}</span>
+                <span className={`mt-2 text-xs ${isCurrent ? "font-medium" : "font-normal"} ${isRefusedOrCanceled ? "text-red-600" : "text-gray-700"}`}>{t(status)}</span>
               </div>
               {index !== OrderStatusList.length - 1 && <div className={`flex-1 h-0.5 mx-2 ${index < currentIndex ? (isRefusedOrCanceled ? "bg-red-300" : "bg-primary") : "bg-gray-200"}`}></div>}
             </li>

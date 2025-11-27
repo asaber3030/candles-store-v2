@@ -58,7 +58,7 @@ export function OrderTracker({ currentStatus = OrderStatusEnum.JustOrdered }: { 
                 >
                   {getStatusIcon(status)}
                 </div>
-                <span className={`mt-2 text-xs transition-colors duration-500 ${isCurrent ? "font-medium" : "font-normal"} ${isRefusedOrCanceled ? "text-red-600" : "text-gray-700"}`}>{status}</span>
+                <span className={`mt-2 text-xs transition-colors duration-500 ${isCurrent ? "font-medium" : "font-normal"} ${isRefusedOrCanceled ? "text-red-600" : "text-gray-700"}`}>{t(status)}</span>
               </div>
               {index !== OrderStatusList.length - 1 && (
                 <div

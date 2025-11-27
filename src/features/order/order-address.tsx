@@ -18,7 +18,7 @@ export const PartOrderAddress = ({ address }: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Shipping Information</CardTitle>
+        <CardTitle>{t("Shipping Information")}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className='text-muted-foreground space-y-2 w-full'>

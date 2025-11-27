@@ -438,5 +438,9 @@
   "In Stock?": "متوفر في المخزون؟",
   "Picture": "الصورة",
   "Icon": "الأيقونة",
-  "Delivered At": "تم التوصيل في"
+  "Delivered At": "تم التوصيل في",
+  "Shipping Information": "معلومات الشحن",
+
+  "JustOrdered": "تم الطلب للتو",
+  "OutForDelivery": "خارج للتوصيل"
 }

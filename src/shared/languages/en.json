@@ -449,5 +449,9 @@
   "In Stock?": "In Stock?",
   "Picture": "Picture",
   "Icon": "Icon",
-  "Delivered At": "Delivered At"
+  "Delivered At": "Delivered At",
+  "Shipping Information": "Shipping Information",
+
+  "JustOrdered": "Just Ordered",
+  "OutForDelivery": "Out for Delivery"
 }
