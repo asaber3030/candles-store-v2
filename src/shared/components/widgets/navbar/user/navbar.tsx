@@ -1,35 +1,36 @@
-"use client";
+"use client"
 
-import AppLogo from "@/shared/components/common/logo";
+import AppLogo from "@/shared/components/common/logo"
 
-import { useLocale, useTranslations } from "next-intl";
-import { useFavouritesStore } from "@/features/favourites/model/favourite.store";
-import { useCurrentUser } from "@/entities/auth/hooks/useAuth";
-import { useContext } from "react";
+import { useLocale, useTranslations } from "next-intl"
+import { useFavouritesStore } from "@/features/favourites/model/favourite.store"
+import { useCurrentUser } from "@/entities/auth/hooks/useAuth"
+import { useContext } from "react"
 
-import { userRoutes } from "@/shared/config/routes";
-import { cn } from "@/shared/lib/cn";
+import { userRoutes } from "@/shared/config/routes"
+import { cn } from "@/shared/lib/cn"
 
-import { NavbarUserDropdown } from "./user-dropdown";
-import { AppSettingsContext } from "@/shared/providers/settings.provider";
-import { NavbarGuestLinks } from "./navbar-guest-links";
-import { DefaultContainer } from "@/shared/components/common/default-container";
-import { LanguageSwitcher } from "@/shared/components/common/language-switcher";
-import { NavbarItem } from "./navbar-item";
-import { CartDrawer } from "@/features/cart/ui/drawer";
-import { Skeleton } from "@/shared/components/ui/skeleton";
-import { LinkBtn } from "@/shared/components/common/link-button";
-import { HeartIcon } from "lucide-react";
-import { NavbarItems } from "@/shared/config/defaults";
-import { NavbarSearch } from "./search-bar";
+import { NavbarUserDropdown } from "./user-dropdown"
+import { AppSettingsContext } from "@/shared/providers/settings.provider"
+import { NavbarGuestLinks } from "./navbar-guest-links"
+import { DefaultContainer } from "@/shared/components/common/default-container"
+import { LanguageSwitcher } from "@/shared/components/common/language-switcher"
+import { NavbarItem } from "./navbar-item"
+import { CartDrawer } from "@/features/cart/ui/drawer"
+import { Skeleton } from "@/shared/components/ui/skeleton"
+import { LinkBtn } from "@/shared/components/common/link-button"
+import { HeartIcon } from "lucide-react"
+import { NavbarItems } from "@/shared/config/defaults"
+import { NavbarSearch } from "./search-bar"
+import { NavbarCategoriesDropdown } from "./categories-dropdown"
 
 export const AppNavbar = () => {
-  const settings = useContext(AppSettingsContext);
-  const locale = useLocale();
-  const t = useTranslations();
+  const settings = useContext(AppSettingsContext)
+  const locale = useLocale()
+  const t = useTranslations()
 
-  const { user, isUserLoading } = useCurrentUser();
-  const { favourites } = useFavouritesStore();
+  const { user, isUserLoading } = useCurrentUser()
+  const { favourites } = useFavouritesStore()
 
   return (
     <nav className="w-full border-b py-2 shadow-md bg-white hidden xl:block">
@@ -40,6 +41,9 @@ export const AppNavbar = () => {
           {NavbarItems.map((item) => (
             <NavbarItem key={item.href} url={item.href} label={t(item.name)} />
           ))}
+          <NavbarCategoriesDropdown />
+
+          <NavbarItem key={userRoutes.contact} url={userRoutes.contact} label={t("Contact")} />
           <NavbarSearch />
         </ul>
 
@@ -47,9 +51,7 @@ export const AppNavbar = () => {
           <LanguageSwitcher />
           <div className={cn("relative")}>
             <LinkBtn href={userRoutes.favourites} size="icon" icon={HeartIcon} variant="destructive" className="size-10 rounded-full text-white" />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              {favourites.length}
-            </span>
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{favourites.length}</span>
           </div>
 
           <CartDrawer />
@@ -68,8 +70,8 @@ export const AppNavbar = () => {
         </div>
       </DefaultContainer>
     </nav>
-  );
-};
+  )
+}
 
 const LoadingButtons = () => {
   return (
@@ -77,5 +79,5 @@ const LoadingButtons = () => {
       <Skeleton className="w-22 h-9" />
       <Skeleton className="w-26 h-9" />
     </div>
-  );
-};
+  )
+}

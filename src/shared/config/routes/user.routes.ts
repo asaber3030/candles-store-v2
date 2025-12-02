@@ -15,6 +15,7 @@ export const userRoutes = {
   categories: {
     index: `/categories`,
     single: (categoryId: number) => `/categories/${categoryId}`,
+    viewBySlug: (slug: string) => `/categories/${slug}`,
   },
   products: {
     index: `/products`,

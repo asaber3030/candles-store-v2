@@ -38,7 +38,7 @@ export const ProductFilters = ({ onChange }: Props) => {
       search,
       categoryId,
       minPrice,
-      maxPrice
+      maxPrice,
     })
   }
 
@@ -47,42 +47,45 @@ export const ProductFilters = ({ onChange }: Props) => {
   }
 
   return (
-    <div className='bg-white p-4 shadow-md rounded-md space-y-8'>
+    <div className="bg-white p-4 shadow-md rounded-md space-y-8">
       {/* Search */}
-      <div className='space-y-4'>
+      <div className="space-y-4">
         <Label>{t("Search")}</Label>
         <Input placeholder={t("Search products")} value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
 
       {/* Category */}
-      <div className='space-y-4'>
+      <div className="space-y-4">
         <Label>{t("Category")}</Label>
         <Select onValueChange={(val) => setCategoryId(Number(val))} value={categoryId?.toString() || ""}>
           <SelectTrigger>
             <SelectValue placeholder={t("Select category")} />
           </SelectTrigger>
           <SelectContent>
-            {categories?.map((cat) => (
-              <SelectItem key={`category-filter-item-${cat.id}`} value={cat.id.toString()}>
-                {cat.name}
-              </SelectItem>
-            ))}
+            {categories &&
+              categories.length &&
+              categories.length > 0 &&
+              categories?.map((cat) => (
+                <SelectItem key={`category-filter-item-${cat.id}`} value={cat.id.toString()}>
+                  {cat.name}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
 
       {/* Price Range */}
-      <div className='space-y-4'>
+      <div className="space-y-4">
         <Label>{t("Price Range")}</Label>
         <PriceRangeSlider minPrice={minPrice ?? 0} maxPrice={maxPrice ?? 1000} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} min={0} max={5000} />
       </div>
 
       {/* Buttons */}
-      <div className='flex gap-2'>
-        <Button onClick={handleApply} className='flex-1'>
+      <div className="flex gap-2">
+        <Button onClick={handleApply} className="flex-1">
           {t("Apply")}
         </Button>
-        <Button variant='outline' onClick={handleReset} className='flex-1'>
+        <Button variant="outline" onClick={handleReset} className="flex-1">
           {t("Reset")}
         </Button>
       </div>

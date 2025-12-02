@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import { useLocale } from "next-intl";
+import { useLocale } from "next-intl"
 
-import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
-import { FullSection, SectionList } from "@/entities/section/model/section";
+import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react"
+import { FullSection, SectionList } from "@/entities/section/model/section"
 
 export function ContactGetInTouch({ section }: { section: FullSection }) {
-  const locale = useLocale();
-  const usedTranslation = section.translations.find((translation) => translation.locale === locale);
+  const locale = useLocale()
+  const usedTranslation = section.translations.find((translation) => translation.locale === locale)
 
-  if (!usedTranslation) return null;
+  if (!usedTranslation) return null
 
-  const list = usedTranslation.list as SectionList;
-  const Icons = [MailIcon, PhoneIcon, MapPinIcon];
+  const list = usedTranslation.list as SectionList
+  const Icons = [MailIcon, PhoneIcon, MapPinIcon]
 
   return (
     <section id="contact-info" className="bg-white py-20 md:py-32 px-4 border-t">
@@ -24,9 +24,9 @@ export function ContactGetInTouch({ section }: { section: FullSection }) {
             list.length &&
             list.length > 0 &&
             list.map((item, index) => {
-              const Icon = Icons[index];
+              const Icon = Icons[index]
               return (
-                <div className="flex flex-col items-center text-center p-8 rounded-lg bg-card hover:shadow-lg transition-shadow">
+                <div className="flex flex-col items-center text-center p-8 rounded-lg bg-card hover:shadow-lg transition-shadow" key={`get-in-touch-item-${index}`}>
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6">
                     <Icon className="w-8 h-8 text-primary" />
                   </div>
@@ -36,10 +36,10 @@ export function ContactGetInTouch({ section }: { section: FullSection }) {
                     {item.title}
                   </a>
                 </div>
-              );
+              )
             })}
         </div>
       </div>
     </section>
-  );
+  )
 }
