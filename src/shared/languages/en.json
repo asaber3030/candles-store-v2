@@ -22,7 +22,7 @@
   "Cities": "Cities",
   "Facebook": "Facebook",
   "Instagram": "Instagram",
-  "MyAccount": "MyAccount",
+  "MyAccount": "My Account",
   "Logout": "Logout",
   "No Data Found": "No Data Found",
   "Order Direction": "Order Direction",
@@ -162,7 +162,8 @@
       "pictures": "Pictures",
       "sizes": "Sizes",
       "reviews": "Reviews",
-      "colors": "Colors"
+      "colors": "Colors",
+      "attributes": "Attributes"
     },
     "info": {
       "arabic_name": "Arabic Name",
@@ -215,6 +216,28 @@
   "Upload Banner": "Upload Banner",
   "Upload Logo": "Upload Logo",
   "Settings": "Settings",
+  "settings": {
+    "basicInfo": {
+      "title": "Basic Information",
+      "description": "Manage the site's basic information such as name, contact, and descriptions."
+    },
+    "branding": {
+      "title": "Branding",
+      "description": "Upload site logo and default banner images."
+    },
+    "animation": {
+      "title": "Default Animation",
+      "description": "Select the default site animation theme."
+    },
+    "socialMedia": {
+      "title": "Social Media",
+      "description": "Manage your social media links displayed on the site."
+    },
+    "payment": {
+      "title": "Payment Methods",
+      "description": "Configure available payment methods and defaults."
+    }
+  },
   "Default Animation": "Default Animation",
   "Statistics": "Statistics",
   "Reviews": "Reviews",
@@ -440,18 +463,82 @@
   "Password Confirmation": "Password Confirmation",
   "Admin Dashboard": "Admin Dashboard",
   "Delivery Company Dashboard": "Delivery Company Dashboard",
-
   "Loading Invoice": "Loading Invoice",
   "Generating PDF": "Generating PDF",
   "Download Invoice": "Download Invoice",
   "Street Name / Street No": "Street Name / Street No.",
-
   "In Stock?": "In Stock?",
   "Picture": "Picture",
   "Icon": "Icon",
   "Delivered At": "Delivered At",
   "Shipping Information": "Shipping Information",
-
   "JustOrdered": "Just Ordered",
-  "OutForDelivery": "Out for Delivery"
+  "OutForDelivery": "Out for Delivery",
+
+  "Upload Popup Image": "Upload Popup Image",
+  "Title": "Title",
+  "Title (Arabic)": "Title (Arabic)",
+  "Content": "Content",
+  "Content (Arabic)": "Content (Arabic)",
+  "Link": "Link",
+  "Page": "Page",
+  "Add Popup Image": "Add Popup Image",
+  "Are you sure you want to delete this popup image?": "Are you sure you want to delete this popup image?",
+  "Popup Settings": "Popup Settings",
+  "No Popup found!": "No Popup found!",
+  "Update this product featured state": "Update this product featured state",
+  "Adding project to featured means it will be highlighted on the main page": "Adding project to featured means it will be highlighted on the main page",
+  "Are you sure you want to remove this product from featured?": "Are you sure you want to remove this product from featured?",
+  "Are you sure you want to add this product to featured?": "Are you sure you want to add this product to featured?",
+  "Featured": "Featured",
+  "Value": "Value",
+  "Name Ar": "Name (Arabic)",
+  "Value Ar": "Value (Arabic)",
+  "Create Attribute": "Create Attribute",
+  "Create Attribute Description": "Fill in the required fields to create a new Attribute.",
+  "Update Attribute": "Update Attribute",
+  "Update Attribute Description": "Fill in the required fields to update an Attribute.",
+  "Attributes": "Attributes",
+  "General Settings": "General Settings",
+  "Banner Settings": "Banner Settings",
+  "Allowed Payment Method": "Allowed Payment Method",
+  "Toggle Off": "Toggle Off",
+  "Toggle On": "Toggle On",
+  "Toggle Popup": "Toggle Popup",
+  "Are you sure you want to toggle this popup?": "Are you sure you want to toggle this popup?",
+  "Delete Popup Image": "Delete Popup Image",
+  "Checking": "Checking...",
+  "Account Settings": "Account Settings",
+  "Pages Settings": "Pages Settings",
+  "Update Popup": "Update Popup",
+  "View Popup": "View Popup",
+  "Page Settings": "Page Settings",
+  "Sections": "Sections",
+  "Add Banner Image": "Add Banner Image",
+  "Upload Banner Image": "Upload Banner Image",
+  "Welcome to Our Story": "Welcome to Our Story",
+  "Send": "Send",
+  "Subject": "Subject",
+  "Message": "Message",
+  "SEO": "SEO",
+  "Update Section": "Update Section",
+  "Section Name": "Section Name",
+  "English": "English",
+  "Arabic": "Arabic",
+  "Missing": "Missing",
+  "Sub Title": "Sub Title",
+  "Action Button Text": "Action Button Text",
+  "Action Button Link": "Action Button Link",
+  "Action Button 2 Text": "Action Button 2 Text",
+  "Action Button 2 Link": "Action Button 2 Link",
+  "List Items": "List Items",
+  "Products Of #": "Products Of {name}",
+
+  "English SEO": "English SEO",
+  "Arabic SEO": "Arabic SEO",
+
+  "Keywords": "Keywords",
+  "Open Graph Title": "Open Graph Title",
+  "Open Graph Site Name": "Open Graph Site Name",
+  "Open Graph Description": "Open Graph Description"
 }

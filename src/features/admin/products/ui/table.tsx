@@ -1,11 +1,11 @@
 "use client"
 
+import { useProducts } from "@/entities/product/hooks/useProducts"
+
 import { SimplePagination } from "@/shared/components/common/simple-pagination"
+import { ProductsColumns } from "./columns"
 import { TableSkeleton } from "@/shared/components/skeletons/table"
 import { DataTable } from "@/shared/components/common/data-table"
-import { useCategories } from "@/entities/category/hooks/useCategories"
-import { ProductsColumns } from "./columns"
-import { useProducts } from "@/entities/product/hooks/useProducts"
 
 type Props = {
   searchParams: TObject

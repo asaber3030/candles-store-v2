@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 enum PaymentMethodTypeEnum {
   Cash
   Card
@@ -21,6 +22,12 @@ enum OrderStatusEnum {
   Refused
 }
 
+enum AllowedPaymentMethodEnum {
+  Cash
+  Card
+  Both
+}
+
 enum UserRoleEnum {
   admin
   user
@@ -33,24 +40,65 @@ enum AnimationEnum {
   Halloween
   Ramadan
   Valentine
+  Summer
 }
 
 model Settings {
-  id               Int    @id @default(autoincrement())
-  siteName         String
-  description      String @db.LongText
-  arDescription    String @db.LongText
-  logo             String @db.LongText
-  phoneNumber      String
-  email            String
-  address          String
-  defaultBanner    String @db.LongText
-  defaultAnimation AnimationEnum @default(Default)
+  id                   Int    @id @default(autoincrement())
+  siteName             String
+  description          String @db.LongText
+  arDescription        String @db.LongText
+  logo                 String @db.LongText
+  phoneNumber          String
+  email                String
+  address              String
+  allowedPaymentMethod AllowedPaymentMethodEnum @default(Both)
+  defaultBanner        String @db.LongText
+  bannerExtension      String @db.VarChar(50) @default("png")
+  defaultAnimation     AnimationEnum @default(Default)
+  facebook             String? @db.LongText
+  instagram            String? @db.LongText
+  twitter              String? @db.LongText
+  snapchat             String? @db.LongText
+  tiktok               String? @db.LongText
+  youtube              String? @db.LongText
 
-  facebook  String? @db.LongText
-  instagram String? @db.LongText
+  @@map("settings")
+}
 
-  @@map("settings") 
+model BannerImage {
+  id        Int    @id @default(autoincrement())
+  image     String @db.LongText
+  extension String @db.VarChar(50)
+
+  @@map("banner_images")
+}
+
+model Popup {
+  id        Int    @id @default(autoincrement())
+
+  image     String @db.LongText
+  title     String @db.LongText
+  titleAr   String @db.LongText
+  contentAr String @db.LongText
+  content   String @db.LongText
+  isActive  Boolean @default(true)
+  link      String @db.LongText
+  extension String @db.VarChar(50)
+
+  images    PopupImage[]
+
+  @@map("popups")
+}
+
+model PopupImage {
+  id        Int    @id @default(autoincrement())
+  image     String @db.LongText
+  extension String @db.VarChar(50)
+  popupId   Int
+  popup     Popup  @relation(fields: [popupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("popup_images")
 }
 
 model User {
@@ -119,8 +167,9 @@ model Address {
 model Category {
   id            Int       @id @default(autoincrement())
   icon          String    @default("/defaults/icons/category.svg")
-  name          String
+  name          String    @unique
   nameAr        String?
+  slug          String?    @unique
   description   String? @db.LongText
   products      Product[]
 
@@ -136,7 +185,10 @@ model Product {
   categoryId      Int
   picture         String  @default("/defaults/product-placeholder.png")
   name            String
+  nameAr          String?
+
   description     String? @db.LongText
+  descriptionAr   String? @db.LongText
   longDescription String? @db.LongText
   price           Float 
   offerPrice      Float @default(0)
@@ -144,6 +196,9 @@ model Product {
   slug            String  @unique
   sku             String  @unique
 
+  isFeatured Boolean @default(false)
+  isActive   Boolean @default(true)
+  
   category       Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ordersItems    OrderItem[]
   giftBoxesItems GiftBoxItem[]
@@ -151,12 +206,29 @@ model Product {
   sizes          ProductSize[]
   colors         ProductColor[]
   pictures       ProductPicture[]
+  attributes     ProductAttribute[]
 
   createdAt DateTime  @default(now()) @db.Timestamp()
   updatedAt DateTime  @default(now()) @db.Timestamp()
   deletedAt DateTime? @db.Timestamp()
 
   @@map("products")
+}
+
+model ProductAttribute {
+  id        Int    @id @default(autoincrement())
+  name      String
+  nameAr    String
+  value     String
+  valueAr   String
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now()) @db.Timestamp()
+  updatedAt DateTime  @default(now()) @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp()
+
+  @@map("product_attributes")
 }
 
 model ProductPicture {
@@ -395,4 +467,67 @@ model City {
   users     User[]
 
   @@map("cities")
+}
+
+
+model Page {
+  id              Int @id   @default(autoincrement())
+  name            String    @unique
+  description     String?   @db.Text
+
+  seoList         PageSEO[]
+  sections        Section[]
+  
+  @@map("pages")
+}
+
+model PageSEO {
+  id            Int @id @default(autoincrement())
+  pageId        Int
+  locale        String
+
+  title         String?
+  description   String?
+  keywords      String?  
+  ogTitle       String?
+  ogDescription String?
+  ogType        String?
+  ogImage       String?
+  ogSiteName    String?
+
+  page          Page @relation(fields: [pageId], references: [id])
+
+  @@map("pages_seo")
+}
+
+model Section {
+  id            Int        @id @default(autoincrement())
+  pageId        Int
+  name          String
+  
+  translations  SectionTranslation[]
+  page          Page       @relation(fields: [pageId], references: [id])
+
+  @@map("sections")
+}
+
+model SectionTranslation {
+  id          Int        @id @default(autoincrement())
+  sectionId   Int
+  section     Section    @relation(fields: [sectionId], references: [id])
+  locale      String     
+  title       String     
+  subTitle    String?
+  content     String
+  image       String?
+
+  list        Json?
+
+  actionButtonText String?
+  actionButtonLink String?
+  actionButton2Text String?
+  actionButton2Link String?
+
+  @@unique([sectionId, locale]) 
+  @@map("section_translations")
 }

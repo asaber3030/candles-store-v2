@@ -8,6 +8,7 @@ import PicturesSection from "@/features/admin/products/ui/view/product-pictures"
 import SizesSection from "@/features/admin/products/ui/view/product-sizes"
 import ReviewsSection from "@/features/admin/products/ui/view/product-reviews"
 import ColorsSection from "@/features/admin/products/ui/view/product-colors"
+import AttributesSection from "@/features/admin/products/ui/view/product-attributes"
 
 type Props = {
   params: Promise<{ productId: string }>
@@ -28,6 +29,7 @@ export default async function ViewProductPage({ params }: Props) {
       <PageTitle title={t("View Product")} />
       <div className='space-y-8'>
         <ProductInfo product={product} />
+        <AttributesSection attributes={product.attributes} productId={product.id} />
         <PicturesSection pictures={product.pictures} productId={product.id} />
         <SizesSection sizes={product.sizes} productId={product.id} />
         <ReviewsSection reviews={product.reviews} productId={product.id} />

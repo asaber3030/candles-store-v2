@@ -1,3 +1,4 @@
+import { FullSection } from "@/entities/section/model/section"
 import { OrderStatusEnum, UserRoleEnum } from "@prisma/client"
 
 export function normalizeLatex(input: string): string {
@@ -92,7 +93,17 @@ export function createPaginatedResponse<T>(products: T[], total: number, page: n
       hasNextPage: page * pageSize < total,
       hasPrevPage: page > 1,
       total,
-      pages: Math.ceil(total / pageSize)
-    }
+      pages: Math.ceil(total / pageSize),
+    },
   }
+}
+
+export function isVideoExtension(extension: string | null | undefined): boolean {
+  if (!extension) return false
+  const lowerCaseExt = extension.toLowerCase()
+  return ["mp4", "mov", "webm", "ogg", "avi"].includes(lowerCaseExt)
+}
+
+export function filterSections(key: string, sections: FullSection[]) {
+  return sections.find((i) => i.name === key)
 }

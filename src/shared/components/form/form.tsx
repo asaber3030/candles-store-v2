@@ -1,36 +1,36 @@
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/shared/components/ui/select"
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/shared/components/ui/form"
-import { FieldValues } from "react-hook-form"
-import { Textarea } from "@/shared/components/ui/textarea"
-import { Input } from "@/shared/components/ui/input"
-import { Checkbox } from "@/shared/components/ui/checkbox"
-import { LucideIcon } from "lucide-react"
-import clsx from "clsx"
-import React from "react"
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/shared/components/ui/select";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/shared/components/ui/form";
+import { FieldValues } from "react-hook-form";
+import { Textarea } from "@/shared/components/ui/textarea";
+import { Input } from "@/shared/components/ui/input";
+import { Checkbox } from "@/shared/components/ui/checkbox";
+import { LucideIcon } from "lucide-react";
+import clsx from "clsx";
+import React from "react";
 
-type WithClassName = { className?: string }
-type WithIcon = { icon?: LucideIcon }
-type WithAstrix = { noAstrix?: boolean }
+type WithClassName = { className?: string };
+type WithIcon = { icon?: LucideIcon };
+type WithAstrix = { noAstrix?: boolean };
 type WithExtraClasses = {
-  labelClassName?: string
-  formItemClassName?: string
-  iconClassName?: string
-  inputClassName?: string
-  divClassName?: string
-}
+  labelClassName?: string;
+  formItemClassName?: string;
+  iconClassName?: string;
+  inputClassName?: string;
+  divClassName?: string;
+};
 
 type BaseFieldProps<T extends FieldValues> = {
-  control: any
-  name: keyof T & string
-  label?: string
-}
+  control: any;
+  name: keyof T & string;
+  label?: string;
+};
 const renderLabel = (label?: string, noAstrix: boolean = false) =>
   label ? (
     <>
       {label}
-      {!noAstrix && <span className='text-red-500'> *</span>}
+      {!noAstrix && <span className="text-red-500"> *</span>}
     </>
-  ) : null
+  ) : null;
 
 export function PasswordField<T extends FieldValues>({
   control,
@@ -55,14 +55,14 @@ export function PasswordField<T extends FieldValues>({
           <FormControl>
             <div className={clsx("relative", divClassName)}>
               {Icon && <Icon className={clsx("absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground", iconClassName)} />}
-              <Input type='password' placeholder='••••••' {...field} {...props} className={clsx(Icon && "pl-8", inputClassName)} />
+              <Input type="password" placeholder="••••••" {...field} {...props} className={clsx(Icon && "pl-8", inputClassName)} />
             </div>
           </FormControl>
           <FormMessage />
         </FormItem>
       )}
     />
-  )
+  );
 }
 export function TextField<T extends FieldValues>({
   control,
@@ -79,7 +79,10 @@ export function TextField<T extends FieldValues>({
   divClassName,
   valueAsNumber,
   ...props
-}: BaseFieldProps<T> & { type?: string; placeholder?: string; valueAsNumber?: boolean } & WithIcon & WithAstrix & WithExtraClasses & Omit<React.ComponentProps<typeof Input>, "name" | "value" | "onChange">) {
+}: BaseFieldProps<T> & { type?: string; placeholder?: string; valueAsNumber?: boolean } & WithIcon &
+  WithAstrix &
+  WithExtraClasses &
+  Omit<React.ComponentProps<typeof Input>, "name" | "value" | "onChange">) {
   return (
     <FormField
       control={control}
@@ -100,9 +103,9 @@ export function TextField<T extends FieldValues>({
                 value={field.value ?? ""}
                 onChange={(e) => {
                   if (valueAsNumber) {
-                    field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)
+                    field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber);
                   } else {
-                    field.onChange(e.target.value)
+                    field.onChange(e.target.value);
                   }
                 }}
                 className={clsx(Icon && "pl-8 text-right", inputClassName)}
@@ -114,7 +117,7 @@ export function TextField<T extends FieldValues>({
         </FormItem>
       )}
     />
-  )
+  );
 }
 
 export function SelectField<T extends FieldValues>({
@@ -131,9 +134,9 @@ export function SelectField<T extends FieldValues>({
   valueAsNumber,
   ...props
 }: BaseFieldProps<T> & {
-  options: { label: string; value: string }[]
-  placeholder?: string
-  valueAsNumber?: boolean
+  options: { label: string; value: string }[];
+  placeholder?: string;
+  valueAsNumber?: boolean;
 } & WithAstrix &
   WithExtraClasses &
   Omit<React.ComponentProps<typeof Select>, "name" | "value" | "onChange">) {
@@ -167,7 +170,7 @@ export function SelectField<T extends FieldValues>({
         </FormItem>
       )}
     />
-  )
+  );
 }
 
 export function TextareaField<T extends FieldValues>({
@@ -181,7 +184,9 @@ export function TextareaField<T extends FieldValues>({
   inputClassName,
   divClassName,
   ...props
-}: BaseFieldProps<T> & { placeholder?: string } & WithAstrix & WithExtraClasses & Omit<React.ComponentProps<typeof Textarea>, "name" | "value" | "onChange">) {
+}: BaseFieldProps<T> & { placeholder?: string } & WithAstrix &
+  WithExtraClasses &
+  Omit<React.ComponentProps<typeof Textarea>, "name" | "value" | "onChange">) {
   return (
     <FormField
       control={control}
@@ -196,7 +201,7 @@ export function TextareaField<T extends FieldValues>({
         </FormItem>
       )}
     />
-  )
+  );
 }
 
 export function CheckboxField<T extends FieldValues>({
@@ -210,7 +215,9 @@ export function CheckboxField<T extends FieldValues>({
   inputClassName,
   divClassName,
   ...props
-}: BaseFieldProps<T> & WithAstrix & WithExtraClasses & { defaultChecked?: boolean } & Omit<React.ComponentProps<typeof Checkbox>, "name" | "checked" | "onChange">) {
+}: BaseFieldProps<T> &
+  WithAstrix &
+  WithExtraClasses & { defaultChecked?: boolean } & Omit<React.ComponentProps<typeof Checkbox>, "name" | "checked" | "onChange">) {
   return (
     <FormField
       control={control}
@@ -218,14 +225,19 @@ export function CheckboxField<T extends FieldValues>({
       render={({ field }) => (
         <FormItem className={clsx("flex items-center justify-start space-x-2 space-y-0", formItemClassName)}>
           <FormControl>
-            <Checkbox checked={field.value ?? defaultChecked} onCheckedChange={(checked) => field.onChange(checked === true)} {...props} className={clsx(inputClassName, divClassName)} />
+            <Checkbox
+              checked={field.value ?? defaultChecked}
+              onCheckedChange={(checked) => field.onChange(checked === true)}
+              {...props}
+              className={clsx(inputClassName, divClassName)}
+            />
           </FormControl>
-          <div className='space-y-1 leading-none'>
+          <div className="space-y-1 leading-none">
             <FormLabel className={labelClassName}>{renderLabel(label, noAstrix)}</FormLabel>
           </div>
           <FormMessage />
         </FormItem>
       )}
     />
-  )
+  );
 }

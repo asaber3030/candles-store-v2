@@ -1,57 +1,61 @@
-"use client"
+"use client";
 
-import { useDefaultMutation } from "@/shared/hooks/useMutation"
-import { useTranslations } from "next-intl"
-import { useAllUsers } from "@/entities/user/hooks/useUsers"
-import { useState } from "react"
+import { useDefaultMutation } from "@/shared/hooks/useMutation";
+import { useTranslations } from "next-intl";
+import { useAllUsers } from "@/entities/user/hooks/useUsers";
+import { useState } from "react";
 
-import { assignOrderShippingCompany } from "@/entities/order/api/order.api"
-import { toast } from "react-toastify"
-import { cn } from "@/shared/lib/cn"
+import { assignOrderShippingCompany } from "@/entities/order/api/order.api";
+import { toast } from "react-toastify";
+import { cn } from "@/shared/lib/cn";
 
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select"
-import { InputSkeleton } from "@/shared/components/skeletons/input"
-import { UserRoleEnum } from "@prisma/client"
-import { NoDataLabel } from "@/shared/components/common/no-data-label"
-import { ClassValue } from "class-variance-authority/types"
-import { Button } from "@/shared/components/ui/button"
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { InputSkeleton } from "@/shared/components/skeletons/input";
+import { UserRoleEnum } from "@prisma/client";
+import { NoDataLabel } from "@/shared/components/common/no-data-label";
+import { ClassValue } from "class-variance-authority/types";
+import { Button } from "@/shared/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/shared/config/query-keys";
 
 type Props = {
-  className?: ClassValue
-  orderId: number
-  variant?: string
-}
+  className?: ClassValue;
+  orderId: number;
+  variant?: string;
+};
 
-type Mut = { companyId: number }
+type Mut = { companyId: number };
 
 export const AssignCompanyToOrderButton = ({ className, orderId }: Props) => {
-  const t = useTranslations()
+  const t = useTranslations();
+  const qc = useQueryClient();
 
-  const { users: deliveryCompanies, isUsersLoading: isDeliveryCompaniesLoading } = useAllUsers({ role: UserRoleEnum.deliveryCompany })
+  const { users: deliveryCompanies, isUsersLoading: isDeliveryCompaniesLoading } = useAllUsers({ role: UserRoleEnum.deliveryCompany });
 
-  const [open, setOpen] = useState(false)
-  const [companyId, setCompanyId] = useState<number | null>(null)
+  const [open, setOpen] = useState(false);
+  const [companyId, setCompanyId] = useState<number | null>(null);
 
   const mutation = useDefaultMutation({
     mutationFn: ({ companyId }: Mut) => assignOrderShippingCompany(orderId, companyId),
     onSuccess: (data) => {
       if (data.status === 200) {
-        setOpen(false)
+        qc.invalidateQueries({ queryKey: queryKeys.orders.index() });
+        setOpen(false);
       }
-    }
-  })
+    },
+  });
 
   const handleUpdate = () => {
     if (!companyId) {
-      toast.error(t("Please select a shipping company"))
-      return
+      toast.error(t("Please select a shipping company"));
+      return;
     }
 
     mutation.mutate({
-      companyId
-    })
-  }
+      companyId,
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -61,7 +65,7 @@ export const AssignCompanyToOrderButton = ({ className, orderId }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className='xl:min-w-[700px] w-[600px]'>
+      <DialogContent className="xl:min-w-[700px] w-[600px]">
         <DialogHeader>
           <DialogTitle>{t("Assign Company To Order #", { orderNumber: orderId })}</DialogTitle>
         </DialogHeader>
@@ -89,13 +93,13 @@ export const AssignCompanyToOrderButton = ({ className, orderId }: Props) => {
           </div>
         )}
 
-        <DialogFooter className='flex gap-1'>
+        <DialogFooter className="flex gap-1">
           <Button onClick={handleUpdate}>{t("Save")}</Button>
           <DialogClose asChild>
-            <Button variant='outline'>{t("Cancel")}</Button>
+            <Button variant="outline">{t("Cancel")}</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

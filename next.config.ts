@@ -1,15 +1,20 @@
-import type { NextConfig } from "next"
-import createNextIntlPlugin from "next-intl/plugin"
+import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true
-  }
-}
+    ignoreBuildErrors: true,
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "100mb",
+    },
+  },
+};
 
-const withNextIntl = createNextIntlPlugin("./src/shared/lib/i18n.ts")
+const withNextIntl = createNextIntlPlugin("./src/shared/lib/i18n.ts");
 
-export default withNextIntl(nextConfig)
+export default withNextIntl(nextConfig);

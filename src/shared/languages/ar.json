@@ -442,5 +442,94 @@
   "Shipping Information": "معلومات الشحن",
 
   "JustOrdered": "تم الطلب للتو",
-  "OutForDelivery": "خارج للتوصيل"
+  "OutForDelivery": "خارج للتوصيل",
+
+  "Title": "العنوان",
+  "Title (Arabic)": "العنوان (بالعربية)",
+  "Content": "المحتوى",
+  "Content (Arabic)": "المحتوى (بالعربية)",
+  "Link": "الرابط",
+  "Page": "الصفحة",
+  "Add Popup Image": "إضافة صورة نافذة منبثقة",
+  "Are you sure you want to delete this popup image?": "هل أنت متأكد أنك تريد حذف صورة النافذة المنبثقة هذه؟",
+  "Popup Settings": "إعدادات النوافذ المنبثقة",
+  "No Popup found!": "لم يتم العثور على نافذة منبثقة!",
+  "Update this product featured state": "تحديث حالة هذا المنتج المميز",
+  "Adding project to featured means it will be highlighted on the main page": "إضافة المشروع إلى المميز تعني أنه سيتم تسليط الضوء عليه في الصفحة الرئيسية",
+  "Are you sure you want to remove this product from featured?": "هل أنت متأكد أنك تريد إزالة هذا المنتج من المميز؟",
+  "Are you sure you want to add this product to featured?": "هل أنت متأكد أنك تريد إضافة هذا المنتج إلى المميز؟",
+  "Featured": "مميز",
+  "Value": "القيمة",
+  "Name Ar": "الاسم (بالعربية)",
+  "Value Ar": "القيمة (بالعربية)",
+  "Create Attribute": "إنشاء خاصية",
+  "Create Attribute Description": "املأ الحقول المطلوبة لإنشاء خاصية جديدة.",
+  "Update Attribute": "تحديث خاصية",
+  "Update Attribute Description": "املأ الحقول المطلوبة لتحديث خاصية.",
+  "Attributes": "الخصائص",
+  "General Settings": "الإعدادات العامة",
+  "Banner Settings": "إعدادات البانر",
+  "Allowed Payment Method": "طريقة الدفع المسموح بها",
+  "Toggle Off": "إيقاف التشغيل",
+  "Toggle On": "تشغيل",
+  "Toggle Popup": "تبديل النافذة المنبثقة",
+  "Are you sure you want to toggle this popup?": "هل أنت متأكد أنك تريد تبديل هذه النافذة المنبثقة؟",
+  "Delete Popup Image": "حذف صورة النافذة المنبثقة",
+  "Checking": "جاري التحقق...",
+  "Account Settings": "إعدادات الحساب",
+  "Pages Settings": "إعدادات الصفحات",
+  "Update Popup": "تحديث النافذة المنبثقة",
+  "View Popup": "عرض النافذة المنبثقة",
+  "Page Settings": "إعدادات الصفحة",
+  "Sections": "الأقسام",
+  "Add Banner Image": "إضافة صورة بانر",
+  "Upload Banner Image": "رفع صورة البانر",
+  "Welcome to Our Story": "مرحباً بكم في قصتنا",
+  "Send": "إرسال",
+  "Subject": "الموضوع",
+  "Message": "الرسالة",
+  "SEO": "تحسين محركات البحث (SEO)",
+  "Update Section": "تحديث القسم",
+  "Section Name": "اسم القسم",
+  "English": "الإنجليزية",
+  "Arabic": "العربية",
+  "Missing": "مفقود",
+  "Sub Title": "العنوان الفرعي",
+  "Action Button Text": "نص زر الإجراء",
+  "Action Button Link": "رابط زر الإجراء",
+  "Action Button 2 Text": "نص زر الإجراء 2",
+  "Action Button 2 Link": "رابط زر الإجراء 2",
+  "List Items": "عناصر القائمة",
+  "settings": {
+    "basicInfo": {
+      "title": "معلومات أساسية",
+      "description": "إدارة معلومات الموقع الأساسية مثل الاسم، الاتصال، و الوصفات."
+    },
+    "branding": {
+      "title": "العلامة التجارية",
+      "description": "تحميل شعار الموقع و صورة البانر."
+    },
+    "animation": {
+      "title": "الرسوم المتحركة",
+      "description": "Select the default site animation theme."
+    },
+    "socialMedia": {
+      "title": "وسائل التواصل الاجتماعي",
+      "description": "إدارة روابط وسائل التواصل الاجتماعي المعرضة على الموقع."
+    },
+    "payment": {
+      "title": "طرق الدفع",
+      "description": "إدارة طرق الدفع المتاحة على الموقع."
+    }
+  },
+  "Upload Popup Image": "رفع صورة النافذة المنبثقة",
+  "Products Of #": "منتجات الخاصة ب {name}",
+  "Offers": "العروض",
+
+  "English SEO": "البحث عن SEO",
+  "Arabic SEO": "البحث عن SEO",
+  "Keywords": "الكلمات المفتاحية",
+  "Open Graph Title": "عنوان Open Graph",
+  "Open Graph Site Name": "اسم الموقع",
+  "Open Graph Description": "وصف Open Graph"
 }
