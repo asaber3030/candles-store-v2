@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "pg": "bunx prisma generate",
+    "pp": "bunx prisma db push"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

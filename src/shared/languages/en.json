@@ -343,7 +343,7 @@
   "Cancel your Order": "Cancel your Order",
   "Street No": "Street No.",
   "Cancel Order": "Cancel Order",
-  "Are you sure you want to cancel your order? This action cannot be undone": "Are you sure you want to cancel your order? This action cannot be undone.",
+  "Are you sure you want to cancel your order? This action cannot be undone": "Are you sure you want to cancel your order? This action cannot be undone. Your money will be refunded directly to your payment method or it might take a few minutes to be refunded.",
   "My Orders": "My Orders",
   "Explore Our Store Categories": "Explore Our Store Categories",
   "All Products": "All Products",
@@ -541,5 +541,11 @@
   "Open Graph Title": "Open Graph Title",
   "Open Graph Site Name": "Open Graph Site Name",
   "Open Graph Description": "Open Graph Description",
-  "See All": "See All"
+  "See All": "See All",
+  "Offers": "Offers",
+  "Pay": "Pay",
+  "Warning": "Warning",
+  "Checkout Warning": "If you confirmed your order, You can only cancel your order if 12 hours have not passed since the order was placed. Otherwise, you will not be able to cancel your order. And the amount you have paid can't be refunded.",
+  "Prev": "Prev",
+  "Next": "Next"
 }

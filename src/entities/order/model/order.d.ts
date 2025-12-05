@@ -1,11 +1,12 @@
 import { Order, OrderItem, Product, User, Coupon, ProductSize, ProductColor } from "@prisma/client"
 import { FullAddress } from "@/entities/user/model/user"
+import { TDefaultUser } from "@/entities/auth/model/auth"
 
 export type FullOrder = Order & {
   coupon: Coupon | null
-  user: User
+  user: TDefaultUser
   address: FullAddress
-  company: User | null
+  company: TDefaultUser | null
   items: FullOrderItem[]
 }
 

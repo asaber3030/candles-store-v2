@@ -358,6 +358,7 @@ model Order {
   orderedAt   DateTime  @default(now()) @db.Timestamp()
   updatedAt   DateTime  @default(now()) @db.Timestamp()
   deliveredAt DateTime? @db.Timestamp()
+  canceledAt  DateTime? @db.Timestamp()
   deletedAt   DateTime? @db.Timestamp()
 
   kashierResponse         String? @db.LongText

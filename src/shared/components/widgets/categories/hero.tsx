@@ -1,24 +1,25 @@
-"use client";
+"use client"
 
-import { useLocale, useTranslations } from "next-intl";
-import { FullSection, SectionList } from "@/entities/section/model/section";
+import { useLocale, useTranslations } from "next-intl"
+import { FullSection, SectionList } from "@/entities/section/model/section"
 
-import { Package } from "lucide-react";
-import { Category } from "@prisma/client";
+import { Package } from "lucide-react"
+import { Category } from "@prisma/client"
+import { useCountStats } from "@/shared/hooks/useStats"
 
 type Props = {
-  section: FullSection;
-  categoriesLength: number;
-  productsLength: number;
-};
+  section: FullSection
+}
 
-export const CategoriesHero = ({ section, categoriesLength, productsLength }: Props) => {
-  const t = useTranslations();
-  const locale = useLocale();
+export const CategoriesHero = ({ section }: Props) => {
+  const t = useTranslations()
+  const locale = useLocale()
 
-  const usedTranslation = section.translations.find((t) => t.locale === locale);
+  const { data, isLoading } = useCountStats()
 
-  if (!usedTranslation) return null;
+  const usedTranslation = section.translations.find((t) => t.locale === locale)
+
+  if (!usedTranslation) return null
 
   return (
     <div className="relative mb-12 rounded-3xl overflow-hidden bg-linear-to-br from-violet-600 via-purple-600 to-indigo-700 p-12 shadow-2xl">
@@ -38,19 +39,15 @@ export const CategoriesHero = ({ section, categoriesLength, productsLength }: Pr
 
         <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
           {usedTranslation.title ? usedTranslation.title : t("Organize Your")}
-          <span className="block bg-linear-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent">
-            {usedTranslation.subTitle ? usedTranslation.subTitle : t("Space")}
-          </span>
+          <span className="block bg-linear-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent">{usedTranslation.subTitle ? usedTranslation.subTitle : t("Space")}</span>
         </h1>
 
-        <p className="text-xl text-white/90 mb-8 leading-relaxed max-w-2xl">
-          {usedTranslation.content ? usedTranslation.content : t("See all different types of categories of candles")}
-        </p>
+        <p className="text-xl text-white/90 mb-8 leading-relaxed max-w-2xl">{usedTranslation.content ? usedTranslation.content : t("See all different types of categories of candles")}</p>
 
         <div className="flex flex-wrap gap-8 text-white/90">
           <div className="flex items-center gap-3">
             <div className="w-12 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <span className="text-2xl font-bold">{categoriesLength}</span>
+              <span className="text-2xl font-bold">{isLoading ? "..." : data?.categoriesCount}</span>
             </div>
             <div>
               <div className="text-sm opacity-80">{t("Total")}</div>
@@ -60,7 +57,7 @@ export const CategoriesHero = ({ section, categoriesLength, productsLength }: Pr
 
           <div className="flex items-center gap-3">
             <div className="w-12 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <span className="text-2xl font-bold">{productsLength}</span>
+              <span className="text-2xl font-bold">{isLoading ? "..." : data?.productsCount}</span>
             </div>
             <div>
               <div className="text-sm opacity-80">{t("Total")}</div>
@@ -82,5 +79,5 @@ export const CategoriesHero = ({ section, categoriesLength, productsLength }: Pr
         ></div>
       </div>
     </div>
-  );
-};
+  )
+}

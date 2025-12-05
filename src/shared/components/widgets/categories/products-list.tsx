@@ -39,8 +39,8 @@ export const ViewCategoryProductsList = ({ category, searchParams }: { category:
   }
 
   return (
-    <div className='grid xl:grid-cols-7 gap-4 grid-cols-1'>
-      <section className='col-span-2'>
+    <div className="grid xl:grid-cols-7 gap-4 grid-cols-1">
+      <section className="xl:col-span-2 col-span-2">
         <CategoryProductsFilters
           onChange={(filters) => {
             const newSp = { ...searchParams, ...filters, page: 1 }
@@ -50,13 +50,13 @@ export const ViewCategoryProductsList = ({ category, searchParams }: { category:
         />
       </section>
 
-      <section className='col-span-5 space-y-4'>
-        <section className='flex flex-wrap items-center gap-4 justify-between'>
-          <h1 className='text-2xl font-semibold'>{t("Products Of Category", { name: category.name })}</h1>
+      <section className="xl:col-span-5 col-span-2 space-y-4">
+        <section className="flex flex-wrap items-center gap-4 justify-between">
+          <h1 className="text-2xl font-semibold">{t("Products Of Category", { name: category.name })}</h1>
 
           <section>
             <Select defaultValue={show.toString()} onValueChange={(value) => handleShowChange(Number(value))}>
-              <SelectTrigger className='w-[180px]'>
+              <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={t("Show")} />
               </SelectTrigger>
               <SelectContent>
@@ -71,7 +71,7 @@ export const ViewCategoryProductsList = ({ category, searchParams }: { category:
         </section>
 
         {isProductsLoading || isProductsRefetching ? (
-          <section className='grid xl:grid-cols-3 grid-cols-1 gap-2'>
+          <section className="grid xl:grid-cols-3 grid-cols-2 gap-2">
             {Array.from({ length: show }).map((_, index) => (
               <ProductCardSkeleton key={`sk-item-product-${index}`} />
             ))}
@@ -79,10 +79,10 @@ export const ViewCategoryProductsList = ({ category, searchParams }: { category:
         ) : (
           <section>
             {products?.data && products.data.length == 0 ? (
-              <p className='text-center py-8'>{t("No products found")}</p>
+              <p className="text-center py-8">{t("No products found")}</p>
             ) : (
               <>
-                <section className='grid xl:grid-cols-3 grid-cols-1 gap-2'>
+                <section className="grid xl:grid-cols-3 grid-cols-2 gap-2">
                   {products?.data?.map((product) => (
                     <ProductCard key={`product-item-${product.id}`} product={product} />
                   ))}

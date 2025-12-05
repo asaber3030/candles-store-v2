@@ -1,13 +1,14 @@
-import { FullSection } from "@/entities/section/model/section";
-import { Sparkles } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl"
+
+import { FullSection } from "@/entities/section/model/section"
+import { Sparkles } from "lucide-react"
 
 export const AboutHero = ({ section }: { section: FullSection }) => {
-  const locale = useLocale();
-  const t = useTranslations();
+  const locale = useLocale()
+  const t = useTranslations()
 
-  const usedTranslation = section.translations.find((translation) => translation.locale === locale);
-  if (!usedTranslation) return null;
+  const usedTranslation = section.translations.find((translation) => translation.locale === locale)
+  if (!usedTranslation) return null
 
   return (
     <section className="relative bg-gradient-to-r overflow-hidden from-amber-50 via-rose-50 to-stone-50 py-24">
@@ -20,13 +21,9 @@ export const AboutHero = ({ section }: { section: FullSection }) => {
           <Sparkles className="w-4 h-4 text-amber-600" />
           <span className="text-sm font-medium text-stone-700">{t("about.nav.about")}</span>
         </div>
-        <h1 className="text-6xl md:text-7xl font-bold text-stone-900 mb-6 tracking-tight">
-          {usedTranslation.title ? usedTranslation.title : t("about.hero.title")}
-        </h1>
-        <p className="text-2xl text-stone-600 max-w-3xl mx-auto leading-relaxed">
-          {usedTranslation.content ? usedTranslation.content : t("about.hero.subtitle")}
-        </p>
+        <h1 className="text-6xl md:text-7xl font-bold text-stone-900 mb-6 tracking-tight">{usedTranslation.title ? usedTranslation.title : t("about.hero.title")}</h1>
+        <p className="text-2xl text-stone-600 max-w-3xl mx-auto leading-relaxed">{usedTranslation.content ? usedTranslation.content : t("about.hero.subtitle")}</p>
       </div>
     </section>
-  );
-};
+  )
+}

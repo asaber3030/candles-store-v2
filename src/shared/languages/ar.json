@@ -309,7 +309,7 @@
   "Cancel your Order": "إلغاء طلبك",
   "Street No": "رقم الشارع.",
   "Cancel Order": "إلغاء الطلب",
-  "Are you sure you want to cancel your order? This action cannot be undone": "هل أنت متأكد من رغبتك في إلغاء طلبك؟ لا يمكن التراجع عن هذا الإجراء.",
+  "Are you sure you want to cancel your order? This action cannot be undone": "هل أنت متأكد من رغبتك في إلغاء طلبك؟ لا يمكن التراجع عن هذا الإجراء. سيتم استردادك مباشرة إلى طريقة الدفع الخاصة بك أو قد يستغرق ذلك بضع دقائق لاستردادك.",
   "My Orders": "طلباتي",
   "Explore Our Store Categories": "استكشف فئات متجرنا",
   "All Products": "جميع المنتجات",
@@ -532,5 +532,10 @@
   "Open Graph Title": "عنوان Open Graph",
   "Open Graph Site Name": "اسم الموقع",
   "Open Graph Description": "وصف Open Graph",
-  "See All": "عرض الكل"
+  "See All": "عرض الكل",
+  "Pay": "دفع",
+  "Warning": "تحذير",
+  "Checkout Warning": "إذا قمت بالتأكيد على الطلب، يمكنك إلغاء الطلب فقط إذا لم يمر 12 ساعة منذ إنشاء الطلب. في حالة ذلك، لن تتمكن من إلغاء الطلب و لن تتمكن من استرداد المبلغ المدفوع.",
+  "Prev": "السابق",
+  "Next": "التالي"
 }

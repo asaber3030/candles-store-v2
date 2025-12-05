@@ -6,7 +6,7 @@ export type FullOrder = Order & {
   coupon: Coupon | null
   user: TDefaultUser
   address: FullAddress
-  company: User | null
+  company: TDefaultUser | null
   items: FullOrderItem[]
 }
 

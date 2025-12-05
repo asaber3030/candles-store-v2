@@ -1,21 +1,15 @@
-"use server";
+"use server"
 
-import prisma from "@/shared/api/prisma";
+import prisma from "@/shared/api/prisma"
 
-import { SectionTranslationSchema } from "../model/section.schema";
-import { SectionListItem } from "../model/section";
+import { SectionTranslationSchema } from "../model/section.schema"
+import { SectionListItem } from "../model/section"
 
-import { actionResponse } from "@/shared/lib/api";
-import { z } from "zod";
-import { uploadToCloudinary } from "@/shared/api/cloudinary";
+import { actionResponse } from "@/shared/lib/api"
+import { z } from "zod"
+import { uploadToCloudinary } from "@/shared/api/cloudinary"
 
-export async function updateSectionTranslationAction(
-  sectionId: number,
-  data: z.infer<typeof SectionTranslationSchema>,
-  list: SectionListItem[],
-  arList: SectionListItem[],
-  imageFile: File | null
-) {
+export async function updateSectionTranslationAction(sectionId: number, data: z.infer<typeof SectionTranslationSchema>, list: SectionListItem[], arList: SectionListItem[], imageFile: File | null) {
   try {
     return await prisma.$transaction(async (tx) => {
       const translations = await tx.sectionTranslation.findMany({
@@ -23,31 +17,31 @@ export async function updateSectionTranslationAction(
           sectionId,
           locale: { in: ["en", "ar"] },
         },
-      });
+      })
 
-      const arTranslation = translations.find((t) => t.locale === "ar");
-      const enTranslation = translations.find((t) => t.locale === "en");
+      const arTranslation = translations.find((t) => t.locale === "ar")
+      const enTranslation = translations.find((t) => t.locale === "en")
 
-      let finalImageUrl: string | null = null;
+      let finalImageUrl: string | null = null
 
       if (imageFile) {
-        const upload = await uploadToCloudinary(imageFile);
-        finalImageUrl = upload.url;
+        const upload = await uploadToCloudinary(imageFile)
+        finalImageUrl = upload.url
       } else {
-        finalImageUrl = arTranslation?.image ?? enTranslation?.image ?? null;
+        finalImageUrl = arTranslation?.image ?? enTranslation?.image ?? null
       }
 
       const upsertTranslation = async (
         locale: "ar" | "en",
         payload: {
-          title: string;
-          content: string;
-          subTitle?: string;
-          list: SectionListItem[];
-          actionButtonText?: string;
-          actionButtonLink?: string;
-          actionButton2Text?: string;
-          actionButton2Link?: string;
+          title: string
+          content: string
+          subTitle?: string
+          list: SectionListItem[]
+          actionButtonText?: string
+          actionButtonLink?: string
+          actionButton2Text?: string
+          actionButton2Link?: string
         }
       ) => {
         const data = {
@@ -60,18 +54,18 @@ export async function updateSectionTranslationAction(
           actionButton2Text: payload.actionButton2Text,
           actionButton2Link: payload.actionButton2Link,
           image: finalImageUrl,
-        };
+        }
 
         if (locale === "ar" && arTranslation) {
           await tx.sectionTranslation.update({
             where: { id: arTranslation.id },
             data,
-          });
+          })
         } else if (locale === "en" && enTranslation) {
           await tx.sectionTranslation.update({
             where: { id: enTranslation.id },
             data,
-          });
+          })
         } else {
           await tx.sectionTranslation.create({
             data: {
@@ -79,9 +73,9 @@ export async function updateSectionTranslationAction(
               locale,
               ...data,
             },
-          });
+          })
         }
-      };
+      }
 
       await Promise.all([
         upsertTranslation("en", {
@@ -104,18 +98,18 @@ export async function updateSectionTranslationAction(
           actionButton2Text: data.ar.actionButton2Text,
           actionButton2Link: data.ar.actionButton2Link,
         }),
-      ]);
+      ])
 
       return actionResponse({
         status: 200,
         message: "Section updated successfully!",
-      });
-    });
+      })
+    })
   } catch (error) {
-    console.error("Error updating section translation:", error);
+    console.error("Error updating section translation:", error)
     return actionResponse({
       status: 500,
       message: "Something went wrong, please try again later.",
-    });
+    })
   }
 }

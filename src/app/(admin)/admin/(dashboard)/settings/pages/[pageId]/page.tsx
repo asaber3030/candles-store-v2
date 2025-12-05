@@ -1,35 +1,37 @@
-import { getLocale, getTranslations } from "next-intl/server";
-import { getFullPageById } from "@/entities/page/api/page.api";
-import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server"
+import { getFullPageById } from "@/entities/page/api/page.api"
+import { notFound } from "next/navigation"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
-import { UpdateSectionForm } from "@/features/admin/settings/pages/update-section";
-import { UpdatePageSEO } from "@/features/admin/settings/pages/update-seo";
-import { PageTitle } from "@/shared/components/common/page-title";
-import { cn } from "@/shared/lib/cn";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/ui/tabs"
+import { UpdateSectionForm } from "@/features/admin/settings/pages/update-section"
+import { UpdatePageSEO } from "@/features/admin/settings/pages/update-seo"
+import { PageTitle } from "@/shared/components/common/page-title"
+import { cn } from "@/shared/lib/cn"
+import { AboutHero } from "@/shared/components/widgets/about/hero"
+import { SectionRenderer } from "@/features/admin/settings/pages/preview-section"
 
 export const metadata = {
   title: "Page Settings",
-};
+}
 
 export type Props = {
-  params: Promise<{ pageId: string }>;
-};
+  params: Promise<{ pageId: string }>
+}
 
 export default async function PageSettingsPage({ params }: Props) {
-  const t = await getTranslations();
-  const pageId = (await params).pageId;
-  const page = await getFullPageById(+pageId);
-  const locale = await getLocale();
+  const t = await getTranslations()
+  const pageId = (await params).pageId
+  const page = await getFullPageById(+pageId)
+  const locale = await getLocale()
 
-  if (!page) notFound();
-  if (isNaN(+pageId)) notFound();
+  if (!page) notFound()
+  if (isNaN(+pageId)) notFound()
 
   const title = (
     <>
       {t("Page Settings")} - <b className="capitalize font-extrabold">{page.name}</b>
     </>
-  );
+  )
 
   return (
     <div>
@@ -50,7 +52,18 @@ export default async function PageSettingsPage({ params }: Props) {
           </TabsContent>
           <TabsContent value="sections" className="space-y-4">
             {page.sections.map((section) => (
-              <UpdateSectionForm key={section.id} section={section} translations={section.translations} />
+              <Tabs defaultValue="edit">
+                <TabsList>
+                  <TabsTrigger value="edit">Edit</TabsTrigger>
+                  <TabsTrigger value="preview">Preview</TabsTrigger>
+                </TabsList>
+                <TabsContent value="edit">
+                  <UpdateSectionForm key={section.id} section={section} translations={section.translations} />
+                </TabsContent>
+                <TabsContent value="preview" className="bg-white p-4 rounded-md">
+                  <SectionRenderer section={section} />
+                </TabsContent>
+              </Tabs>
             ))}
 
             {page.sections.length === 0 && <p className="text-center text-gray-500">No sections found</p>}
@@ -58,5 +71,5 @@ export default async function PageSettingsPage({ params }: Props) {
         </Tabs>
       </div>
     </div>
-  );
+  )
 }

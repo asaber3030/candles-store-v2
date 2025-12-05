@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { PaymentMethodTypeEnum } from "@prisma/client"
 import { CartItem } from "@/features/cart/model/cart"
 import { Button } from "@/shared/components/ui/button"
+import { Separator } from "@/shared/components/ui/separator"
 
 type Props = {
   selectedAddressId: number | null
@@ -51,7 +52,7 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod,
         clearCart()
         window.location.href = data.data.paymentUrl
       }
-    }
+    },
   })
 
   const createCashOrder = useDefaultMutation({
@@ -62,7 +63,7 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod,
         clearCart()
         router.push(userRoutes.profile.viewOrder(data.data.orderId))
       }
-    }
+    },
   })
 
   const checkout = () => {
@@ -75,13 +76,13 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod,
       createOnlineOrder.mutate({
         addressId: selectedAddressId,
         data: items,
-        couponCode
+        couponCode,
       })
     } else if (paymentMethod === PaymentMethodTypeEnum.Cash) {
       createCashOrder.mutate({
         addressId: selectedAddressId,
         data: items,
-        couponCode
+        couponCode,
       })
     } else {
       toast.error(t("Please select a valid payment method"))
@@ -90,7 +91,7 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod,
 
   if (items.length === 0) {
     return (
-      <Button className='w-full' disabled>
+      <Button className="w-full" disabled>
         {t("Checkout")}
       </Button>
     )
@@ -99,7 +100,7 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod,
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className='w-full'>{t("Checkout")}</Button>
+        <Button className="w-full">{t("Checkout")}</Button>
       </DialogTrigger>
 
       <DialogContent>
@@ -108,40 +109,46 @@ export const CheckoutButton = ({ selectedAddressId, deliveryFees, paymentMethod,
         </DialogHeader>
 
         <section>
-          <ul className='space-y-2'>
-            <li className='flex justify-between'>
+          <ul className="space-y-2">
+            <li className="flex justify-between">
               <span>{t("Items")}:</span>
               <span>{items.length}</span>
             </li>
 
-            <li className='flex justify-between'>
+            <li className="flex justify-between">
               <span>{t("Sub Total")}:</span>
-              <span className='text-green-700 font-semibold'>{formatCurrency(subtotal)}</span>
+              <span className="text-green-700 font-semibold">{formatCurrency(subtotal)}</span>
             </li>
 
             {appliedCoupon && (
-              <li className='flex justify-between'>
+              <li className="flex justify-between">
                 <span>
                   {t("Coupon Discount")} ({appliedCoupon.name} - {appliedCoupon.discount}%):
                 </span>
-                <span className='text-green-700 font-semibold'>- {formatCurrency(discountAmount)}</span>
+                <span className="text-green-700 font-semibold">- {formatCurrency(discountAmount)}</span>
               </li>
             )}
 
-            <li className='flex justify-between'>
+            <li className="flex justify-between">
               <span>{t("Delivery Fees")}:</span>
-              <span className='text-green-700 font-semibold'>{formatCurrency(deliveryFees)}</span>
+              <span className="text-green-700 font-semibold">{formatCurrency(deliveryFees)}</span>
             </li>
 
-            <li className='flex justify-between border-t pt-2'>
-              <span className='font-semibold'>{t("Total Amount")}:</span>
-              <span className='text-green-700 font-bold'>{formatCurrency(finalTotal)}</span>
+            <li className="flex justify-between border-t pt-2">
+              <span className="font-semibold">{t("Total Amount")}:</span>
+              <span className="text-green-700 font-bold">{formatCurrency(finalTotal)}</span>
             </li>
+
+            <Separator />
+
+            <p className="text-red-500">
+              <b>{t("Warning")}:</b> {t("Checkout Warning")}
+            </p>
           </ul>
         </section>
 
         <DialogFooter>
-          <Button disabled={createOnlineOrder.isPending || createCashOrder.isPending || !selectedAddressId} onClick={checkout} className='w-full'>
+          <Button disabled={createOnlineOrder.isPending || createCashOrder.isPending || !selectedAddressId} onClick={checkout} className="w-full">
             {t("Confirm")}
           </Button>
         </DialogFooter>

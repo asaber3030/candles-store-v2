@@ -5,6 +5,7 @@ import { ViewUserOrderDetails } from "@/features/order/view-order"
 import { DefaultContainer } from "@/shared/components/common/default-container"
 import { ErrorAlert } from "@/shared/components/common/error-alert"
 import { PageTitle } from "@/shared/components/common/page-title"
+import { Button } from "@/shared/components/ui/button"
 import { userRoutes } from "@/shared/config/routes"
 import { OrderStatusEnum } from "@prisma/client"
 import { Metadata } from "next"
@@ -17,7 +18,7 @@ type Props = {
 
 export const metadata: Metadata = {
   title: "Orders - Profile",
-  description: "User profile orders page"
+  description: "User profile orders page",
 }
 
 export default async function ViewOrderPage({ params }: Props) {
@@ -31,15 +32,20 @@ export default async function ViewOrderPage({ params }: Props) {
   const order = await getUserOrder(Number(orderId))
   if (!order)
     return (
-      <DefaultContainer className='py-10'>
+      <DefaultContainer className="py-10">
         <ErrorAlert title={t("Order not found")} />
       </DefaultContainer>
     )
 
   return (
-    <DefaultContainer className='py-10'>
-      <PageTitle className='border-b mb-4 pb-1' title={t("Order Details") + ` #${order.id}`}>
+    <DefaultContainer className="py-10">
+      <PageTitle className="border-b mb-4 pb-1" title={t("Order Details") + ` #${order.id}`}>
         {order.status === OrderStatusEnum.JustOrdered && <CancelOrderButton orderId={order.id} />}
+        {order.paymentUrl && order.paymentMethod === "Card" && order.paymentStatus != "paid" && (
+          <a href={order.paymentUrl} target="_blank" rel="noopener noreferrer">
+            <Button variant="success">{t("Pay")}</Button>
+          </a>
+        )}
       </PageTitle>
 
       <ViewUserOrderDetails order={order} />

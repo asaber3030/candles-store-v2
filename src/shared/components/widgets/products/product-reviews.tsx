@@ -1,26 +1,28 @@
-import moment from "moment";
+import moment from "moment"
 
-import { useTranslations } from "next-intl";
-import { useCurrentUser } from "@/entities/auth/hooks/useAuth";
+import { useLocale, useTranslations } from "next-intl"
+import { useCurrentUser } from "@/entities/auth/hooks/useAuth"
 
-import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
-import { ProductReview, User } from "@prisma/client";
-import { CreateUserReview } from "@/features/reviews/ui/create-review";
-import { TDefaultUser } from "@/entities/auth/model/auth";
+import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar"
+import { ProductReview, User } from "@prisma/client"
+import { CreateUserReview } from "@/features/reviews/ui/create-review"
+import { TDefaultUser } from "@/entities/auth/model/auth"
+import { cn } from "@/shared/lib/cn"
 
 type Props = {
-  reviews: (ProductReview & { user: TDefaultUser })[];
-  productId: number;
-};
+  reviews: (ProductReview & { user: TDefaultUser })[]
+  productId: number
+}
 
 export const ProductReviewsViewer = ({ productId, reviews }: Props) => {
-  const t = useTranslations();
-  const { user } = useCurrentUser();
-  const avg = (reviews.reduce((acc, review) => acc + review.rate, 0) / reviews.length || 0).toFixed(2);
+  const t = useTranslations()
+  const locale = useLocale()
+  const { user } = useCurrentUser()
+  const avg = (reviews.reduce((acc, review) => acc + review.rate, 0) / reviews.length || 0).toFixed(2)
 
   return (
     <section>
-      <h2 className="text-2xl font-bold py-4">
+      <h2 className={cn("text-2xl font-bold py-4", locale == "ar" ? "text-right" : "text-left")}>
         {t("Customer Reviews")} ({avg})
       </h2>
       {reviews.length == 0 ? (
@@ -57,5 +59,5 @@ export const ProductReviewsViewer = ({ productId, reviews }: Props) => {
 
       <CreateUserReview productId={productId} />
     </section>
-  );
-};
+  )
+}

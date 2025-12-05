@@ -32,7 +32,7 @@ export const CancelOrderButton = ({ orderId }: Props) => {
         setOpen(false)
         router.refresh()
       }
-    }
+    },
   })
 
   const cancelOrderHandler = () => {
@@ -42,18 +42,18 @@ export const CancelOrderButton = ({ orderId }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='destructive' icon={XIcon}>
+        <Button variant="destructive" icon={XIcon}>
           {t("Cancel Order")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("Cancel your Order")}</DialogTitle>
-          <DialogDescription>{t("Are you sure you want to cancel your order? This action cannot be undone")}</DialogDescription>
         </DialogHeader>
+        <p className="text-gray-500 font-medium text-lg">{t("Are you sure you want to cancel your order? This action cannot be undone")}</p>
 
         <DialogFooter>
-          <Button disabled={cancelOrder.isPending} onClick={cancelOrderHandler} className='w-full'>
+          <Button disabled={cancelOrder.isPending} onClick={cancelOrderHandler} className="w-full">
             {t("Confirm")}
           </Button>
         </DialogFooter>
