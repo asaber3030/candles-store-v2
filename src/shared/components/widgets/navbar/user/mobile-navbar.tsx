@@ -10,13 +10,15 @@ import { CartDrawer } from "@/features/cart/ui/drawer"
 
 export const MobileNavbarContainer = () => {
   return (
-    <nav className="xl:hidden h-[130px] w-full left-0 top-0 z-40 flex items-center justify-between xl:px-20 px-6 py-4 bg-white shadow-md border-b border-b-gray-200">
+    <nav className="xl:hidden h-[160px] w-full left-0 top-0 z-40 flex items-center justify-between xl:px-20 px-6 py-4 bg-white shadow-md border-b border-b-gray-200">
+      <div className="flex gap-2 items-center">
+        <NavbarSearch />
+        <NavbarFavouritesLink />
+        <CartDrawer />
+      </div>
       <AppLogo />
       <div className="flex gap-2 items-center">
         <LanguageSwitcher />
-        <NavbarSearch />
-        {/*<NavbarFavouritesLink />*/}
-        <CartDrawer />
         <MobileNavbarTrigger />
       </div>
     </nav>
