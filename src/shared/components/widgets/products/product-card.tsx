@@ -2,14 +2,15 @@
 
 import Link from "next/link"
 
+import { useLocale } from "next-intl"
+
 import { formatCurrency } from "@/shared/lib/numbers"
 import { userRoutes } from "@/shared/config/routes"
 
 import { ProductWithCategory } from "@/entities/product/model/product"
 import { AddToFavouriteButton } from "@/features/favourites/ui/add-to-favourite"
 import { AddToCartButton } from "@/features/cart/ui/add-to-cart"
-import { Fullscreen } from "lucide-react"
-import { Button } from "@/shared/components/ui/button"
+
 import { Badge } from "@/shared/components/ui/badge"
 
 type Props = {
@@ -17,6 +18,8 @@ type Props = {
 }
 
 export const ProductCard = ({ product }: Props) => {
+  const locale = useLocale()
+
   return (
     <div className="xl:bg-white xl:rounded-md xl:overflow-hidden xl:shadow-md xl:hover:shadow-lg xl:transition-shadow xl:duration-300">
       <div className="h-90 relative group overflow-hidden block">
@@ -31,12 +34,14 @@ export const ProductCard = ({ product }: Props) => {
 
       <section className="py-2 xl:p-4 xl:rounded-md xl:space-y-2">
         <div>
-          <Link href={userRoutes.products.viewBySlug(product.slug)} className="max-w-full truncate text-ellipsis hover:underline hover:text-blue-600">
-            {product.name}
+          <Link href={userRoutes.products.viewBySlug(product.slug)} className="block w-full truncate hover:underline hover:text-blue-600">
+            {(locale == "ar" ? product.nameAr : product.name) || product.name}
           </Link>
           <p className="text-green-700 font-semibold">{formatCurrency(product.price || 0)}</p>
         </div>
-        <Badge variant="outline" className='my-2'>{product.category.name}</Badge>
+        <Badge variant="outline" className="my-2">
+          {(locale == "ar" ? product.category.nameAr : product.category.name) || product.category.name}
+        </Badge>
         <AddToCartButton product={product} />
       </section>
     </div>

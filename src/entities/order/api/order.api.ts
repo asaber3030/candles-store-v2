@@ -141,7 +141,7 @@ export async function cancelUserOrderAction(orderId: number) {
 
     await prisma.order.update({
       where: { id: order.id },
-      data: { status: OrderStatusEnum.Canceled, paymentStatus: order.paymentMethod != "Card" ? "refunded" : "canceled", canceledAt: new Date() },
+      data: { status: OrderStatusEnum.Canceled, paymentStatus: order.paymentMethod === "Card" ? "refunded" : "canceled", canceledAt: new Date() },
     })
     return actionResponse({
       status: 200,

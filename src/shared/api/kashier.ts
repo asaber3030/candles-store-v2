@@ -105,7 +105,8 @@ export class KashierService {
           Authorization: this.secretKey,
         },
       })
-
+      console.log(response.data)
+      return true
     } catch (error: any) {
       console.error("Kashier Refund Error:", error?.response?.data || error)
       return false

@@ -42,7 +42,6 @@ export const HomeBanner = ({ section }: { section: FullSection }) => {
   const [index, setIndex] = useState(0)
   const intervalRef = useRef<number | null>(null)
 
-  // Auto-advance every 1500ms
   useEffect(() => {
     if (!slides || slides.length <= 1) return
     intervalRef.current = window.setInterval(() => {
@@ -53,7 +52,6 @@ export const HomeBanner = ({ section }: { section: FullSection }) => {
     }
   }, [slides])
 
-  // Reset index if slides change
   useEffect(() => setIndex(0), [slides.length])
 
   const goPrev = () => setIndex((i) => (i - 1 + slides.length) % slides.length)
@@ -92,7 +90,7 @@ export const HomeBanner = ({ section }: { section: FullSection }) => {
         </div>
       ) : null}
 
-      <div className="container mx-auto flex gap-10 flex-col md:flex-row items-center md:items-start justify-between">
+      <div className="container mx-auto flex gap-10 p-4 flex-col md:flex-row items-center md:items-start justify-between">
         <DefaultContainer className="text-white mb-8 md:mb-0">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 mt-10">{usedTranslation.title}</h1>
           <p className="text-xl md:text-2xl mb-6 max-w-xl">{usedTranslation.content}</p>

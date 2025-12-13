@@ -15,7 +15,7 @@ export const MobileNavbarContainer = () => {
       <div className="flex gap-2 items-center">
         <LanguageSwitcher />
         <NavbarSearch />
-        <NavbarFavouritesLink />
+        {/*<NavbarFavouritesLink />*/}
         <CartDrawer />
         <MobileNavbarTrigger />
       </div>

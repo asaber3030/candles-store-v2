@@ -33,7 +33,7 @@ export const AdvancedPagination: FC<PaginationMeta> = ({ page, pages, hasNextPag
   }
 
   return (
-    <div className="flex items-center justify-center space-x-2 mt-6">
+    <div className="flex flex-wrap gap-2 items-center justify-center space-x-2 mt-6">
       {/* Previous Button */}
       <Button onClick={prevPage} variant="outline" size="sm" disabled={page === 1}>
         {t("Prev")}

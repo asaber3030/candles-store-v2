@@ -107,3 +107,18 @@ export function isVideoExtension(extension: string | null | undefined): boolean 
 export function filterSections(key: string, sections: FullSection[]) {
   return sections.find((i) => i.name === key)
 }
+
+export function isImageFile(file: File | undefined | null) {
+  if (!file) {
+    return false
+  }
+
+  return file.type.startsWith("image/")
+}
+export function isVideoFile(file: File | undefined | null) {
+  if (!file) {
+    return false
+  }
+
+  return file.type.startsWith("video/")
+}

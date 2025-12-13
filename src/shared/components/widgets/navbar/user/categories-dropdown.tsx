@@ -38,7 +38,7 @@ export const NavbarCategoriesDropdown = ({ children }: { children?: React.ReactN
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="w-full xl:w-fit">{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent className="xl:min-w-[600px]">
+      <DropdownMenuContent className="xl:min-w-[600px] w-[200px]">
         <DropdownMenuLabel className="flex items-center gap-2 w-full justify-between">
           {t("Categories")}
           <Link href={userRoutes.categories.index} className="ml-2 flex items-center gap-2 hover:underline">
@@ -50,7 +50,7 @@ export const NavbarCategoriesDropdown = ({ children }: { children?: React.ReactN
         {isCategoriesLoading ? (
           <DropdownMenuItem>Loading...</DropdownMenuItem>
         ) : (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid xl:grid-cols-2 grid-cols-1 gap-2">
             {categories?.data?.map((category) => (
               <DropdownMenuItem
                 onClick={() => router.push(userRoutes.categories.viewBySlug(category.slug!))}

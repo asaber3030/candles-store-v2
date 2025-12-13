@@ -1,44 +1,44 @@
-"use server";
+"use server"
 
-import prisma, { defaulTableSelectors } from "@/shared/api/prisma";
-import appConfig from "@/shared/config/defaults/app";
+import prisma, { defaulTableSelectors } from "@/shared/api/prisma"
+import appConfig from "@/shared/config/defaults/app"
 
-import { Product } from "@/shared/models/product.model";
-import { Prisma } from "@prisma/client";
-import { CreateProductAttributeSchema, CreateProductReviewSchema, CreateProductSchema, CreateProductSizeSchema } from "../model/product.schema";
-import { TCreateProductColorPayload, TCreateProductPayload, TCreateProductReviewPayload, TCreateProductSizePayload } from "../model/product";
-import z, { ZodError } from "zod";
+import { Product } from "@/shared/models/product.model"
+import { Prisma } from "@prisma/client"
+import { CreateProductAttributeSchema, CreateProductReviewSchema, CreateProductSchema, CreateProductSizeSchema } from "../model/product.schema"
+import { TCreateProductColorPayload, TCreateProductPayload, TCreateProductReviewPayload, TCreateProductSizePayload } from "../model/product"
+import z, { ZodError } from "zod"
 
-import { deleteFromCloudinary, uploadToCloudinary } from "@/shared/api/cloudinary";
-import { createPaginatedResponse, extractCloudinaryPublicId } from "@/shared/lib/functions";
-import { actionResponse } from "@/shared/lib/api";
-import { revalidatePath } from "next/cache";
-import { adminRoutes, userRoutes } from "@/shared/config/routes";
-import { generateSKU, slugify } from "@/shared/lib/strings";
-import { getCurrentUser } from "@/entities/auth/api/auth.api";
-import { safeParseNumber } from "@/shared/lib/numbers";
+import { deleteFromCloudinary, uploadToCloudinary } from "@/shared/api/cloudinary"
+import { createPaginatedResponse, extractCloudinaryPublicId, isImageFile } from "@/shared/lib/functions"
+import { actionResponse } from "@/shared/lib/api"
+import { revalidatePath } from "next/cache"
+import { adminRoutes, userRoutes } from "@/shared/config/routes"
+import { generateSKU, slugify } from "@/shared/lib/strings"
+import { getCurrentUser } from "@/entities/auth/api/auth.api"
+import { safeParseNumber } from "@/shared/lib/numbers"
 
 export async function getProductsPaginated(sp: TObject = {}) {
   try {
-    const page = safeParseNumber(sp.page, 1);
-    const pageSize = safeParseNumber(sp.pageSize, 10);
-    const minPrice = safeParseNumber(sp.minPrice, 0);
-    const maxPrice = safeParseNumber(sp.maxPrice, 0);
-    const categoryId = safeParseNumber(sp.categoryId, 0);
+    const page = safeParseNumber(sp.page, 1)
+    const pageSize = safeParseNumber(sp.pageSize, 10)
+    const minPrice = safeParseNumber(sp.minPrice, 0)
+    const maxPrice = safeParseNumber(sp.maxPrice, 0)
+    const categoryId = safeParseNumber(sp.categoryId, 0)
 
-    let where: Prisma.ProductWhereInput = {};
+    let where: Prisma.ProductWhereInput = {}
 
     if (sp.minPrice && !isNaN(Number(sp.minPrice))) {
-      where.price = { gte: minPrice };
+      where.price = { gte: minPrice }
     }
     if (sp.maxPrice && !isNaN(Number(sp.maxPrice))) {
-      where.price = { lte: maxPrice };
+      where.price = { lte: maxPrice }
     }
     if (sp.categoryId && !isNaN(Number(sp.categoryId))) {
-      where.categoryId = categoryId;
+      where.categoryId = categoryId
     }
     if (sp.search) {
-      where.name = { contains: String(sp.search) };
+      where.name = { contains: String(sp.search) }
     }
 
     const products = await prisma.product.findMany({
@@ -50,35 +50,35 @@ export async function getProductsPaginated(sp: TObject = {}) {
         category: true,
         pictures: true,
       },
-    });
+    })
 
-    const total = await prisma.product.count({ where });
+    const total = await prisma.product.count({ where })
 
-    return createPaginatedResponse(products, total, page, pageSize);
+    return createPaginatedResponse(products, total, page, pageSize)
   } catch (error) {
-    console.log(error);
-    throw new Error("Error fetching paginated products");
+    console.log(error)
+    throw new Error("Error fetching paginated products")
   }
 }
 
 export async function getCategoryProductsPaginated(categoryId: number, sp: TObject = {}) {
   try {
-    const page = safeParseNumber(sp.page, 1);
-    const pageSize = safeParseNumber(sp.pageSize, 10);
-    const minPrice = safeParseNumber(sp.minPrice, 0);
-    const maxPrice = safeParseNumber(sp.maxPrice, 0);
+    const page = safeParseNumber(sp.page, 1)
+    const pageSize = safeParseNumber(sp.pageSize, 10)
+    const minPrice = safeParseNumber(sp.minPrice, 0)
+    const maxPrice = safeParseNumber(sp.maxPrice, 0)
 
-    let where: Prisma.ProductWhereInput = { categoryId };
+    let where: Prisma.ProductWhereInput = { categoryId }
 
     if (sp.minPrice && !isNaN(Number(sp.minPrice))) {
-      where.price = { gte: minPrice };
+      where.price = { gte: minPrice }
     }
     if (sp.maxPrice && !isNaN(Number(sp.maxPrice))) {
-      where.price = { lte: maxPrice };
+      where.price = { lte: maxPrice }
     }
 
     if (sp.search) {
-      where.name = { contains: String(sp.search) };
+      where.name = { contains: String(sp.search) }
     }
 
     const products = await prisma.product.findMany({
@@ -89,14 +89,14 @@ export async function getCategoryProductsPaginated(categoryId: number, sp: TObje
         category: true,
         pictures: true,
       },
-    });
+    })
 
-    const total = await prisma.product.count({ where });
+    const total = await prisma.product.count({ where })
 
-    return createPaginatedResponse(products, total, page, pageSize);
+    return createPaginatedResponse(products, total, page, pageSize)
   } catch (error) {
-    console.log(error);
-    throw new Error("Error fetching paginated products");
+    console.log(error)
+    throw new Error("Error fetching paginated products")
   }
 }
 
@@ -106,12 +106,12 @@ export async function getFeaturedProducts(limit: number = 6) {
       take: limit,
       where: { isFeatured: true },
       include: { category: true },
-    });
+    })
 
-    return products;
+    return products
   } catch (error) {
-    console.log(error);
-    throw new Error("Error fetching featured products");
+    console.log(error)
+    throw new Error("Error fetching featured products")
   }
 }
 
@@ -127,11 +127,11 @@ export async function getProduct(productId: number) {
         reviews: { include: { user: { select: defaulTableSelectors.user } } },
         colors: true,
       },
-    });
-    return product;
+    })
+    return product
   } catch (error) {
-    console.log(error);
-    throw new Error("Error fetching product");
+    console.log(error)
+    throw new Error("Error fetching product")
   }
 }
 
@@ -147,60 +147,60 @@ export async function getProductBySlug(slug: string) {
         reviews: { include: { user: { select: defaulTableSelectors.user } } },
         colors: true,
       },
-    });
-    return product;
+    })
+    return product
   } catch (error) {
-    console.log(error);
-    throw new Error("Error fetching product");
+    console.log(error)
+    throw new Error("Error fetching product")
   }
 }
 
 export async function userHasReviewedProduct(productId: number) {
   try {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser()
     const review = await prisma.productReview.findFirst({
       where: { productId, userId: currentUser?.id },
       select: { id: true },
-    });
-    return !!review;
+    })
+    return !!review
   } catch (error) {
-    console.log(error);
-    throw new Error("Error checking product review");
+    console.log(error)
+    throw new Error("Error checking product review")
   }
 }
 
 export async function createProductReviewAction(productId: number, data: TCreateProductReviewPayload) {
   try {
-    const parsed = CreateProductReviewSchema.parse(data);
+    const parsed = CreateProductReviewSchema.parse(data)
 
     const existingProduct = await prisma.product.findUnique({
       where: { id: productId },
       select: { id: true, slug: true },
-    });
+    })
     if (!existingProduct) {
       return actionResponse({
         status: 400,
         message: "Product does not exist",
-      });
+      })
     }
 
-    const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser()
     if (!currentUser) {
       return actionResponse({
         status: 401,
         message: "Unauthorized",
-      });
+      })
     }
 
     const review = await prisma.productReview.findFirst({
       where: { productId, userId: currentUser.id },
       select: { id: true },
-    });
+    })
     if (review) {
       return actionResponse({
         status: 400,
         message: "You have already reviewed this product",
-      });
+      })
     }
 
     const newReview = await prisma.productReview.create({
@@ -210,26 +210,26 @@ export async function createProductReviewAction(productId: number, data: TCreate
         rate: parsed.rate,
         review: parsed.review,
       },
-    });
+    })
 
-    revalidatePath(userRoutes.products.viewBySlug(existingProduct.slug || ""));
+    revalidatePath(userRoutes.products.viewBySlug(existingProduct.slug || ""))
 
     return actionResponse({
       status: 201,
       message: "Your review has been submitted successfully",
       data: newReview,
-    });
+    })
   } catch (error) {
     if (error instanceof ZodError) {
       return actionResponse({
         status: 400,
         message: "Invalid input data",
-      });
+      })
     }
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error creating product",
-    });
+    })
   }
 }
 
@@ -237,17 +237,17 @@ export async function deleteProductReviewAction(reviewId: number) {
   try {
     await prisma.productReview.delete({
       where: { id: reviewId },
-    });
+    })
 
     return actionResponse({
       status: 200,
       message: "Review deleted successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error deleting review",
-    });
+    })
   }
 }
 
@@ -255,39 +255,42 @@ export async function deleteProductReviewAction(reviewId: number) {
 
 export async function createProductAction(data: TCreateProductPayload, file: File | null) {
   try {
-    const parsed = CreateProductSchema.parse(data);
+    const parsed = CreateProductSchema.parse(data)
 
     if (!file) {
       return actionResponse({
         status: 400,
         message: "Please upload a product picture",
-      });
+      })
     }
 
-    let url = (await uploadToCloudinary(file)).url;
+    if (file.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+    if (!isImageFile(file)) return actionResponse({ message: "Invalid image file", status: 400 })
 
-    const slug = slugify(parsed.name);
-    const sku = generateSKU(parsed.name);
+    let url = (await uploadToCloudinary(file)).url
+
+    const slug = slugify(parsed.name)
+    const sku = generateSKU(parsed.name)
     const existingProduct = await prisma.product.findUnique({
       where: { slug },
       select: { id: true },
-    });
+    })
     if (existingProduct) {
       return actionResponse({
         status: 400,
         message: "A product with this name already exists",
-      });
+      })
     }
 
     const existingSKU = await prisma.product.findUnique({
       where: { sku },
       select: { id: true },
-    });
+    })
     if (existingSKU) {
       return actionResponse({
         status: 400,
         message: "A product with this SKU already exists",
-      });
+      })
     }
 
     const newProduct = await prisma.product.create({
@@ -305,73 +308,76 @@ export async function createProductAction(data: TCreateProductPayload, file: Fil
         categoryId: parsed.categoryId,
         quantity: parsed.quantity,
       },
-    });
+    })
 
     return actionResponse({
       status: 201,
       message: "Product created successfully",
       data: newProduct,
-    });
+    })
   } catch (error) {
     if (error instanceof ZodError) {
       return actionResponse({
         status: 400,
         message: "Invalid input data",
-      });
+      })
     }
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error creating product",
-    });
+    })
   }
 }
 
 export async function updateProductAction(productId: number, data: TCreateProductPayload, file: File | null) {
   try {
-    const parsed = CreateProductSchema.parse(data);
+    const parsed = CreateProductSchema.parse(data)
 
     const oldProduct = await prisma.product.findUnique({
       where: { id: productId },
       select: { id: true, picture: true, slug: true, sku: true, name: true },
-    });
+    })
 
     if (!oldProduct) {
       return actionResponse({
         status: 404,
         message: "Product not found",
-      });
+      })
     }
 
-    let url = oldProduct.picture;
+    let url = oldProduct.picture
     if (file) {
-      url = (await uploadToCloudinary(file)).url;
+      if (file.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+      if (!isImageFile(file)) return actionResponse({ message: "Invalid image file", status: 400 })
+      await deleteFromCloudinary(extractCloudinaryPublicId(oldProduct.picture))
+      url = (await uploadToCloudinary(file)).url
     }
 
-    const slug = slugify(parsed.name);
-    const sku = generateSKU(parsed.name);
+    const slug = slugify(parsed.name)
+    const sku = generateSKU(parsed.name)
 
     const existingProduct = await prisma.product.findUnique({
       where: { slug },
       select: { id: true },
-    });
+    })
 
     if (existingProduct && existingProduct.id !== productId) {
       return actionResponse({
         status: 400,
         message: "A product with this name already exists",
-      });
+      })
     }
 
     const existingSKU = await prisma.product.findUnique({
       where: { sku },
       select: { id: true },
-    });
+    })
 
     if (existingSKU && existingSKU.id !== productId) {
       return actionResponse({
         status: 400,
         message: "A product with this SKU already exists",
-      });
+      })
     }
 
     const updatedProduct = await prisma.product.update({
@@ -390,26 +396,26 @@ export async function updateProductAction(productId: number, data: TCreateProduc
         categoryId: parsed.categoryId,
         quantity: parsed.quantity,
       },
-    });
+    })
 
-    revalidatePath(adminRoutes.products.view(productId));
+    revalidatePath(adminRoutes.products.view(productId))
 
     return actionResponse({
       status: 200,
       message: "Product updated successfully",
       data: updatedProduct,
-    });
+    })
   } catch (error) {
     if (error instanceof ZodError) {
       return actionResponse({
         status: 400,
         message: "Invalid input data",
-      });
+      })
     }
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error updating product",
-    });
+    })
   }
 }
 
@@ -418,18 +424,18 @@ export async function deleteProductAction(productId: number) {
     await prisma.product.update({
       where: { id: productId },
       data: { deletedAt: new Date() },
-    });
-    revalidatePath(adminRoutes.products.view(productId));
+    })
+    revalidatePath(adminRoutes.products.view(productId))
 
     return actionResponse({
       status: 200,
       message: "Product deleted successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error deleting product",
-    });
+    })
   }
 }
 
@@ -438,18 +444,18 @@ export async function restoreProductAction(productId: number) {
     await prisma.product.update({
       where: { id: productId },
       data: { deletedAt: null },
-    });
-    revalidatePath(adminRoutes.products.view(productId));
+    })
+    revalidatePath(adminRoutes.products.view(productId))
 
     return actionResponse({
       status: 200,
       message: "Product restored successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error restoring product",
-    });
+    })
   }
 }
 
@@ -458,18 +464,18 @@ export async function updateProductFeaturedStateAction(productId: number, state:
     await prisma.product.update({
       where: { id: productId },
       data: { isFeatured: state },
-    });
-    revalidatePath(adminRoutes.products.view(productId));
+    })
+    revalidatePath(adminRoutes.products.view(productId))
 
     return actionResponse({
       status: 200,
       message: "Product " + (state ? "marked as featured" : "removed from featured") + " successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error updating product featured state",
-    });
+    })
   }
 }
 
@@ -481,12 +487,12 @@ export async function createProductAttributeAction(productId: number, data: z.in
         productId,
         name: data.name,
       },
-    });
+    })
     if (isAttributeExist) {
       return actionResponse({
         status: 400,
         message: "Attribute with this name already exists for this product",
-      });
+      })
     }
     const newAttribute = await prisma.productAttribute.create({
       data: {
@@ -496,18 +502,18 @@ export async function createProductAttributeAction(productId: number, data: z.in
         value: data.value,
         valueAr: data.valueAr,
       },
-    });
-    revalidatePath(adminRoutes.products.view(newAttribute?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(newAttribute?.productId || 0))
     return actionResponse({
       status: 201,
       message: "Product attribute added successfully",
       data: newAttribute,
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error adding product attribute",
-    });
+    })
   }
 }
 
@@ -517,12 +523,12 @@ export async function updateProductAttributeAction(attributeId: number, data: z.
       where: {
         id: attributeId,
       },
-    });
+    })
     if (!attr) {
       return actionResponse({
         status: 400,
         message: "Attribute with this name already exists for this product",
-      });
+      })
     }
 
     const newAttribute = await prisma.productAttribute.update({
@@ -533,18 +539,18 @@ export async function updateProductAttributeAction(attributeId: number, data: z.
         value: data.value,
         valueAr: data.valueAr,
       },
-    });
-    revalidatePath(adminRoutes.products.view(newAttribute?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(newAttribute?.productId || 0))
     return actionResponse({
       status: 201,
       message: "Product attribute updated successfully",
       data: newAttribute,
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error updating product attribute",
-    });
+    })
   }
 }
 
@@ -552,20 +558,20 @@ export async function deleteProductAttributeAction(attributeId: number) {
   try {
     const attribute = await prisma.productAttribute.findUnique({
       where: { id: attributeId },
-    });
+    })
     await prisma.productAttribute.delete({
       where: { id: attributeId },
-    });
-    revalidatePath(adminRoutes.products.view(attribute?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(attribute?.productId || 0))
     return actionResponse({
       status: 200,
       message: "Product attribute deleted successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error deleting product attribute",
-    });
+    })
   }
 }
 
@@ -577,36 +583,33 @@ export async function createProductPictureAction(productId: number, file: File |
       return actionResponse({
         status: 400,
         message: "No file provided",
-      });
+      })
     }
-    if (file.size > appConfig.maxUploadFileSize) {
-      return actionResponse({
-        status: 400,
-        message: "File size exceeds 5MB limit",
-      });
-    }
-    const data = await uploadToCloudinary(file);
+    if (file.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+    if (!isImageFile(file)) return actionResponse({ message: "Invalid image file", status: 400 })
+
+    const data = await uploadToCloudinary(file)
     if (!data.url) {
       return actionResponse({
         status: 500,
         message: "Error uploading file to Cloudinary",
-      });
+      })
     }
     const newPicture = await prisma.productPicture.create({
       data: { productId, picture: data.url },
-    });
-    revalidatePath(adminRoutes.products.view(newPicture?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(newPicture?.productId || 0))
 
     return actionResponse({
       status: 201,
       message: "Product picture added successfully",
       data: newPicture,
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error adding product picture",
-    });
+    })
   }
 }
 
@@ -614,22 +617,22 @@ export async function deleteProductPictureAction(pictureId: number) {
   try {
     const picture = await prisma.productPicture.findUnique({
       where: { id: pictureId },
-    });
-    const publicId = extractCloudinaryPublicId(picture?.picture || "");
-    await deleteFromCloudinary(publicId);
+    })
+    const publicId = extractCloudinaryPublicId(picture?.picture || "")
+    await deleteFromCloudinary(publicId)
     await prisma.productPicture.delete({
       where: { id: pictureId },
-    });
-    revalidatePath(adminRoutes.products.view(picture?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(picture?.productId || 0))
     return actionResponse({
       status: 200,
       message: "Product picture deleted successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error deleting product picture",
-    });
+    })
   }
 }
 
@@ -642,19 +645,19 @@ export async function createProductColorAction(productId: number, data: TCreateP
         productId,
         color: data.color,
       },
-    });
-    revalidatePath(adminRoutes.products.view(newColor?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(newColor?.productId || 0))
 
     return actionResponse({
       status: 201,
       message: "Product color added successfully",
       data: newColor,
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error adding product color",
-    });
+    })
   }
 }
 
@@ -663,18 +666,18 @@ export async function deleteProductColorAction(colorId: number) {
     const color = await prisma.productColor.update({
       where: { id: colorId },
       data: { deletedAt: new Date() },
-    });
-    revalidatePath(adminRoutes.products.view(color?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(color?.productId || 0))
 
     return actionResponse({
       status: 200,
       message: "Product color deleted successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error deleting product color",
-    });
+    })
   }
 }
 
@@ -683,18 +686,18 @@ export async function restoreProductColorAction(colorId: number) {
     const color = await prisma.productColor.update({
       where: { id: colorId },
       data: { deletedAt: null },
-    });
-    revalidatePath(adminRoutes.products.view(color?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(color?.productId || 0))
 
     return actionResponse({
       status: 200,
       message: "Product color restored successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error restoring product color",
-    });
+    })
   }
 }
 
@@ -702,44 +705,44 @@ export async function restoreProductColorAction(colorId: number) {
 
 export async function createProductSizeAction(productId: number, data: TCreateProductSizePayload) {
   try {
-    const parsed = CreateProductSizeSchema.parse(data);
+    const parsed = CreateProductSizeSchema.parse(data)
     const newSize = await prisma.productSize.create({
       data: { ...parsed, isCircle: !!parsed.isCircle, productId },
-    });
-    revalidatePath(adminRoutes.products.view(newSize?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(newSize?.productId || 0))
 
     return actionResponse({
       status: 201,
       message: "Product size added successfully",
       data: newSize,
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error adding product size",
-    });
+    })
   }
 }
 
 export async function updateProductSizeAction(sizeId: number, data: TCreateProductSizePayload) {
   try {
-    const parsed = CreateProductSizeSchema.parse(data);
+    const parsed = CreateProductSizeSchema.parse(data)
     const updatedSize = await prisma.productSize.update({
       where: { id: sizeId },
       data: { ...parsed, isCircle: !!parsed.isCircle },
-    });
-    revalidatePath(adminRoutes.products.view(updatedSize?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(updatedSize?.productId || 0))
 
     return actionResponse({
       status: 200,
       message: "Product size updated successfully",
       data: updatedSize,
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error updating product size",
-    });
+    })
   }
 }
 
@@ -748,18 +751,18 @@ export async function deleteProductSizeAction(sizeId: number) {
     const size = await prisma.productSize.update({
       where: { id: sizeId },
       data: { deletedAt: new Date() },
-    });
-    revalidatePath(adminRoutes.products.view(size?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(size?.productId || 0))
 
     return actionResponse({
       status: 200,
       message: "Product size deleted successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error deleting product size",
-    });
+    })
   }
 }
 
@@ -768,17 +771,17 @@ export async function restoreProductSizeAction(sizeId: number) {
     const size = await prisma.productSize.update({
       where: { id: sizeId },
       data: { deletedAt: null },
-    });
-    revalidatePath(adminRoutes.products.view(size?.productId || 0));
+    })
+    revalidatePath(adminRoutes.products.view(size?.productId || 0))
 
     return actionResponse({
       status: 200,
       message: "Product size restored successfully",
-    });
+    })
   } catch (error) {
     return actionResponse({
       status: 500,
       message: error instanceof Error ? error.message : "Error restoring product size",
-    });
+    })
   }
 }

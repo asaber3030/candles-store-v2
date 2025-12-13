@@ -15,7 +15,7 @@ import { FullOrder } from "../admin/orders/model/orders"
 export const OrdersColumns: ColumnDef<FullOrder>[] = [
   {
     accessorKey: "id",
-    header: "ID"
+    header: "ID",
   },
   {
     accessorKey: "user.name",
@@ -23,11 +23,11 @@ export const OrdersColumns: ColumnDef<FullOrder>[] = [
     cell: ({ row }) => {
       const user = row.original.user
       return (
-        <LinkBtn variant='ghost' href={adminRoutes.users.details(user.id)}>
+        <LinkBtn variant="ghost" href={adminRoutes.users.details(user.id)}>
           {user.name} - {user.phoneNumber}
         </LinkBtn>
       )
-    }
+    },
   },
 
   {
@@ -36,38 +36,47 @@ export const OrdersColumns: ColumnDef<FullOrder>[] = [
     cell: ({ row }) => {
       const user = row.original.user
       return (
-        <LinkBtn variant='ghost' href={adminRoutes.users.details(user.id)}>
+        <LinkBtn variant="ghost" href={adminRoutes.users.details(user.id)}>
           {user.name} - {user.phoneNumber}
         </LinkBtn>
       )
-    }
+    },
   },
   {
     accessorKey: "total",
     header: "Total Amount",
     cell: ({ row }) => {
       const total = row.getValue("total") as number
-      return <p className='text-green-600 font-bold'>{formatCurrency(total)}</p>
-    }
+      return <p className="text-green-600 font-bold">{formatCurrency(total)}</p>
+    },
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <Badge variant={getOrderStatusVariant(row.original.status) as any}>{getOrderStatusLabel(row.getValue("status"))}</Badge>
+    cell: ({ row }) => <Badge variant={getOrderStatusVariant(row.original.status) as any}>{getOrderStatusLabel(row.getValue("status"))}</Badge>,
+  },
+  {
+    accessorKey: "paymentStatus",
+    header: "Payment Status",
+    cell: ({ row }) => (
+      <Badge variant={row.original.paymentStatus == "paid" ? "success" : "warning"} className="capitalize">
+        {row.original.paymentStatus}
+      </Badge>
+    ),
   },
   {
     accessorKey: "paymentMethod",
-    header: "Payment Method"
+    header: "Payment Method",
   },
   {
     accessorKey: "orderedAt",
     header: "Ordered At",
-    cell: ({ row }) => diffForHumans(row.getValue("orderedAt"))
+    cell: ({ row }) => diffForHumans(row.getValue("orderedAt")),
   },
   {
     accessorKey: "deliveredAt",
     header: "Delivered At",
-    cell: ({ row }) => (row.getValue("deliveredAt") ? diffForHumans(row.getValue("deliveredAt")) : "N/A")
+    cell: ({ row }) => (row.getValue("deliveredAt") ? diffForHumans(row.getValue("deliveredAt")) : "N/A"),
   },
 
   {
@@ -76,12 +85,12 @@ export const OrdersColumns: ColumnDef<FullOrder>[] = [
     cell: ({ row }) => {
       const order = row.original
       return (
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <Link href={userRoutes.profile.viewOrder(order.id)}>
-            <TooltipButton tooltip='View Order Details' variant='outline' size='icon' icon={Eye} />
+            <TooltipButton tooltip="View Order Details" variant="outline" size="icon" icon={Eye} />
           </Link>
         </div>
       )
-    }
-  }
+    },
+  },
 ]

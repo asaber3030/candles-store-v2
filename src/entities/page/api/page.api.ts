@@ -5,10 +5,11 @@ import prisma from "@/shared/api/prisma"
 import { PageSEOSchema } from "../model/page.schema"
 import { FullPage } from "../model/page"
 
-import { getErrorMessage } from "@/shared/lib/functions"
+import { getErrorMessage, isImageFile } from "@/shared/lib/functions"
 import { actionResponse } from "@/shared/lib/api"
 import { z } from "zod"
 import { uploadToCloudinary } from "@/shared/api/cloudinary"
+import appConfig from "@/shared/config/defaults/app"
 
 export async function getPage(id: number) {
   try {
@@ -149,6 +150,9 @@ export async function updatePageTranslationAction(pageId: number, data: z.infer<
 
     if (!enTranslation) {
       if (image) {
+        if (image.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+        if (!isImageFile(image)) return actionResponse({ message: "Invalid image file", status: 400 })
+
         imageUrl = (await uploadToCloudinary(image)).url
       }
       await prisma.pageSEO.create({
@@ -160,7 +164,12 @@ export async function updatePageTranslationAction(pageId: number, data: z.infer<
         },
       })
     } else {
-      if (image) imageUrl = (await uploadToCloudinary(image)).url
+      if (image) {
+        if (image.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+        if (!isImageFile(image)) return actionResponse({ message: "Invalid image file", status: 400 })
+
+        imageUrl = (await uploadToCloudinary(image)).url
+      }
       await prisma.pageSEO.update({
         where: { id: enTranslation.id },
         data: {
@@ -171,7 +180,12 @@ export async function updatePageTranslationAction(pageId: number, data: z.infer<
     }
 
     if (!arTranslation) {
-      if (image) imageUrl = (await uploadToCloudinary(image)).url
+      if (image) {
+        if (image.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+        if (!isImageFile(image)) return actionResponse({ message: "Invalid image file", status: 400 })
+
+        imageUrl = (await uploadToCloudinary(image)).url
+      }
       await prisma.pageSEO.create({
         data: {
           ...data.ar,
@@ -181,7 +195,12 @@ export async function updatePageTranslationAction(pageId: number, data: z.infer<
         },
       })
     } else {
-      if (image) imageUrl = (await uploadToCloudinary(image)).url
+      if (image) {
+        if (image.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+        if (!isImageFile(image)) return actionResponse({ message: "Invalid image file", status: 400 })
+
+        imageUrl = (await uploadToCloudinary(image)).url
+      }
       await prisma.pageSEO.update({
         where: { id: arTranslation.id },
         data: {

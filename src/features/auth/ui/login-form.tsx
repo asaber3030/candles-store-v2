@@ -29,10 +29,10 @@ export const LoginForm = ({ hideForgetPassword = false, type = "user", redirectU
   const form = useForm({
     resolver: zodResolver(AuthLoginSchema),
     defaultValues: {
-      email: "a@a.com",
-      password: "0552320541",
-      type
-    }
+      email: "",
+      password: "",
+      type,
+    },
   })
 
   const finalRedirection = sp.get("redirect") || redirectUrl
@@ -45,18 +45,18 @@ export const LoginForm = ({ hideForgetPassword = false, type = "user", redirectU
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleLogin)} className='space-y-4'>
-        <TextField control={form.control} name='email' label={t("Email")} placeholder={t("Email")} />
+      <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+        <TextField control={form.control} name="email" label={t("Email")} placeholder={t("Email")} />
         <div>
-          <PasswordField control={form.control} name='password' type='password' label={t("Password")} placeholder={t("Password")} />
+          <PasswordField control={form.control} name="password" type="password" label={t("Password")} placeholder={t("Password")} />
           {!hideForgetPassword && (
-            <Link href='/forget-password' className='text-sm text-primary hover:underline flex justify-end '>
+            <Link href="/forget-password" className="text-sm text-primary hover:underline flex justify-end ">
               {t("Forgot Password?")}
             </Link>
           )}
         </div>
 
-        <Button className='w-full' loading={isLoginPending} variant='indigo'>
+        <Button className="w-full" loading={isLoginPending} variant="indigo">
           {t("Login")}
         </Button>
       </form>

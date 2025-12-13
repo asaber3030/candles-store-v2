@@ -41,7 +41,7 @@ export default async function ViewOrderPage({ params }: Props) {
     <DefaultContainer className="py-10">
       <PageTitle className="border-b mb-4 pb-1" title={t("Order Details") + ` #${order.id}`}>
         {order.status === OrderStatusEnum.JustOrdered && <CancelOrderButton orderId={order.id} />}
-        {order.paymentUrl && order.paymentMethod === "Card" && order.paymentStatus != "paid" && (
+        {order.paymentUrl && order.paymentMethod === "Card" && order.paymentStatus != "paid" && order.status != "Canceled" && (
           <a href={order.paymentUrl} target="_blank" rel="noopener noreferrer">
             <Button variant="success">{t("Pay")}</Button>
           </a>

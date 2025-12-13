@@ -19,6 +19,7 @@ import { MenuIcon } from "lucide-react"
 import { Button } from "@/shared/components/ui/button"
 
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import { NavbarFavouritesLink } from "./favourties-link"
 
 export const MobileNavbarTrigger = () => {
   const t = useTranslations()
@@ -58,7 +59,13 @@ export const MobileNavbarTrigger = () => {
 
         <Separator />
 
-        <div className="flex gap-2 items-center p-4">{isUserLoading ? <LoadingButtons /> : !user ? <NavbarGuestLinks /> : <NavbarUserDropdown />}</div>
+        <div className="flex gap-2 items-center flex-wrap p-4">{isUserLoading ? <LoadingButtons /> : !user ? <NavbarGuestLinks /> : <NavbarUserDropdown />}</div>
+
+        <Separator />
+
+        <div className="flex gap-2 items-center p-4">
+          <NavbarFavouritesLink />
+        </div>
       </SheetContent>
     </Sheet>
   )

@@ -1,4 +1,4 @@
-import { Section, SectionTranslation } from "@prisma/client"
+import { Section, SectionTranslation, Page } from "@prisma/client"
 
 export type SectionListItem = {
   title: string

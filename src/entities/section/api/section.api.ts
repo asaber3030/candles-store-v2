@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/shared/api/prisma"
+import appConfig from "@/shared/config/defaults/app"
 
 import { SectionTranslationSchema } from "../model/section.schema"
 import { SectionListItem } from "../model/section"
@@ -8,6 +9,7 @@ import { SectionListItem } from "../model/section"
 import { actionResponse } from "@/shared/lib/api"
 import { z } from "zod"
 import { uploadToCloudinary } from "@/shared/api/cloudinary"
+import { isImageFile } from "@/shared/lib/functions"
 
 export async function updateSectionTranslationAction(sectionId: number, data: z.infer<typeof SectionTranslationSchema>, list: SectionListItem[], arList: SectionListItem[], imageFile: File | null) {
   try {
@@ -25,7 +27,11 @@ export async function updateSectionTranslationAction(sectionId: number, data: z.
       let finalImageUrl: string | null = null
 
       if (imageFile) {
+        if (imageFile.size > appConfig.maxUploadFileSize) return actionResponse({ message: "Image size is too large. Max file size is 10MB", status: 400 })
+        if (!isImageFile(imageFile)) return actionResponse({ message: "Invalid image file", status: 400 })
+
         const upload = await uploadToCloudinary(imageFile)
+
         finalImageUrl = upload.url
       } else {
         finalImageUrl = arTranslation?.image ?? enTranslation?.image ?? null

@@ -547,5 +547,6 @@
   "Warning": "Warning",
   "Checkout Warning": "If you confirmed your order, You can only cancel your order if 12 hours have not passed since the order was placed. Otherwise, you will not be able to cancel your order. And the amount you have paid can't be refunded.",
   "Prev": "Prev",
-  "Next": "Next"
+  "Next": "Next",
+  "Payment Status": "Payment Status"
 }
