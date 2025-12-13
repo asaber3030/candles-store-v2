@@ -86,7 +86,6 @@ export class KashierService {
   }
 
   public async refundPayment(kashierOrderId: string, amount: number): Promise<boolean> {
-    console.log({ kashierConfig })
     try {
       const baseUrl = "https://test-fep.kashier.io/v3/orders"
       const url = `${baseUrl}/${kashierOrderId}`
@@ -107,9 +106,6 @@ export class KashierService {
         },
       })
 
-      console.log("Kashier refund response:", response.data)
-
-      return response.data?.status === "SUCCESS"
     } catch (error: any) {
       console.error("Kashier Refund Error:", error?.response?.data || error)
       return false

@@ -1,22 +1,30 @@
-import { FullPopup } from "@/entities/popup/model/popup";
-import { DeleteImagePopupButton } from "./delete-popup-image-button";
+import { FullPopup } from "@/entities/popup/model/popup"
+import { DeleteImagePopupButton } from "./delete-popup-image-button"
 
 const isVideoExtension = (extension: string | null | undefined): boolean => {
-  if (!extension) return false;
-  const lowerCaseExt = extension.toLowerCase();
-  return ["mp4", "mov", "webm", "ogg", "avi"].includes(lowerCaseExt);
-};
+  if (!extension) return false
+  const lowerCaseExt = extension.toLowerCase()
+  return ["mp4", "mov", "webm", "ogg", "avi"].includes(lowerCaseExt)
+}
 
 export const AdminPopupViewer = ({ popup }: { popup: FullPopup }) => {
-  const isVideo = isVideoExtension(popup.extension);
-  console.log("Popup Viewer - isVideo:", isVideo);
-  console.log("Popup Viewer - isVideo:", popup);
+  const isVideo = isVideoExtension(popup.extension)
 
   return (
     <div className="w-full border rounded-md p-6 bg-white">
       <h2 className="text-2xl font-bold mb-4">Popup Preview</h2>
 
-      <div className="w-full h-96 flex-shrink-0 rounded-md overflow-hidden border">{popup.image ? isVideo ? <video src={popup.image} controls className="w-full h-full object-cover bg-black" title={popup.title ?? "popup-video"} /> : <img src={popup.image} alt={popup.title ?? "popup-image"} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">No media</div>}</div>
+      <div className="w-full h-96 flex-shrink-0 rounded-md overflow-hidden border">
+        {popup.image ? (
+          isVideo ? (
+            <video src={popup.image} controls className="w-full h-full object-cover bg-black" title={popup.title ?? "popup-video"} />
+          ) : (
+            <img src={popup.image} alt={popup.title ?? "popup-image"} className="w-full h-full object-cover" />
+          )
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-sm text-gray-500">No media</div>
+        )}
+      </div>
       <div className="flex gap-6 my-4">
         <div className="flex-1">
           <div className="mb-3">
@@ -82,5 +90,5 @@ export const AdminPopupViewer = ({ popup }: { popup: FullPopup }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

@@ -16,7 +16,6 @@ type Props = {
 }
 
 export function DatePicker({ label, date, setDate }: Props) {
-  console.log({ date })
   return (
     <div className='space-y-2'>
       <Label>{label}</Label>

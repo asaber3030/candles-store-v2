@@ -12,7 +12,6 @@ type Props = {
 }
 
 export const ViewUserOrderDetails = ({ order }: Props) => {
-  console.log("Order Details:", order)
   return (
     <div className='w-full mt-4'>
       <div className='flex flex-col'>

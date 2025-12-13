@@ -13,7 +13,6 @@ type Props = {
 
 export const PartOrderAddress = ({ address }: Props) => {
   const t = useTranslations()
-  console.log("Order Address:", address)
 
   return (
     <Card>

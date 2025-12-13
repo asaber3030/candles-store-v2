@@ -18,48 +18,46 @@ export const AdminViewUser = ({ searchParams, user }: Props) => {
 
   const { addresses, isAddressesLoading } = useUserAddresses(user.id)
 
-  console.log({ addresses })
-
   return (
-    <div className='space-y-4'>
+    <div className="space-y-4">
       <div>
-        <div className='flex justify-between items-center'>
-          <p className='text-lg font-bold'>{t("User Information")}</p>
+        <div className="flex justify-between items-center">
+          <p className="text-lg font-bold">{t("User Information")}</p>
           <Badge variant={getRoleVariant(user.role) as any}>{getRoleLabel(user.role)}</Badge>
         </div>
-        <ul className='p-4 rounded-md border bg-white shadow-md divide-y space-y-2'>
-          <li className='flex justify-between items-center'>
+        <ul className="p-4 rounded-md border bg-white shadow-md divide-y space-y-2">
+          <li className="flex justify-between items-center">
             <span>{t("ID")}:</span>
-            <span className='font-semibold'>{user.id}</span>
+            <span className="font-semibold">{user.id}</span>
           </li>
-          <li className='flex justify-between items-center'>
+          <li className="flex justify-between items-center">
             <span>{t("Name")}:</span>
-            <span className='font-semibold'>{user.name}</span>
+            <span className="font-semibold">{user.name}</span>
           </li>
-          <li className='flex justify-between items-center'>
+          <li className="flex justify-between items-center">
             <span>{t("Country / City")}:</span>
-            <span className='font-semibold'>
+            <span className="font-semibold">
               {user.country.name}({user.country.code}) / {user.city.name}({user.city.code})
             </span>
           </li>
-          <li className='flex justify-between items-center'>
+          <li className="flex justify-between items-center">
             <span>{t("Phone Number")}:</span>
-            <span className='font-semibold'>{user.phoneNumber}</span>
+            <span className="font-semibold">{user.phoneNumber}</span>
           </li>
-          <li className='flex justify-between items-center'>
+          <li className="flex justify-between items-center">
             <span>{t("Email")}:</span>
-            <span className='font-semibold'>{user.email}</span>
+            <span className="font-semibold">{user.email}</span>
           </li>
-          <li className='flex justify-between items-center'>
+          <li className="flex justify-between items-center">
             <span>{t("Created At")}:</span>
-            <span className='font-semibold'>{new Date(user.createdAt).toLocaleDateString()}</span>
+            <span className="font-semibold">{new Date(user.createdAt).toLocaleDateString()}</span>
           </li>
         </ul>
       </div>
 
       <div>
-        <p className='text-lg font-bold'>{t("User Addresses")}</p>
-        <div className='grid grid-cols-3 gap-4'>
+        <p className="text-lg font-bold">{t("User Addresses")}</p>
+        <div className="grid grid-cols-3 gap-4">
           {isAddressesLoading ? (
             <p>Loading...</p>
           ) : (
@@ -67,23 +65,23 @@ export const AdminViewUser = ({ searchParams, user }: Props) => {
               {addresses && addresses.length > 0 ? (
                 <div>
                   {addresses.map((address) => (
-                    <ul key={`address-user-${address.id}`} className='border p-4 rounded-md divide-y space-y-2 bg-white shadow-md'>
-                      <li className='flex justify-between items-center mb-2'>
-                        <span className='font-semibold'>{t("Street Name / Street No")}</span>
+                    <ul key={`address-user-${address.id}`} className="border p-4 rounded-md divide-y space-y-2 bg-white shadow-md">
+                      <li className="flex justify-between items-center mb-2">
+                        <span className="font-semibold">{t("Street Name / Street No")}</span>
                         <span>
                           {address.streetName} / {address.streetNo}
                         </span>
                       </li>
-                      <li className='flex justify-between items-center mb-2'>
-                        <span className='font-semibold'>{t("Phone Number")}</span>
+                      <li className="flex justify-between items-center mb-2">
+                        <span className="font-semibold">{t("Phone Number")}</span>
                         <span>{address.phoneNumber}</span>
                       </li>
-                      <li className='flex justify-between items-center mb-2'>
-                        <span className='font-semibold'>{t("Country / City")}</span>
+                      <li className="flex justify-between items-center mb-2">
+                        <span className="font-semibold">{t("Country / City")}</span>
                         <span>{`${address.country.name} (${address.country.code}) / ${address.city.name}(${address.city.code})`}</span>
                       </li>
-                      <li className='flex justify-between items-center mb-2'>
-                        <span className='font-semibold'>{t("Is Default Address")}</span>
+                      <li className="flex justify-between items-center mb-2">
+                        <span className="font-semibold">{t("Is Default Address")}</span>
                         <span>
                           <Badge variant={address.isDefault ? "success" : "default"}>{address.isDefault ? "Yes" : "No"}</Badge>
                         </span>
@@ -101,7 +99,7 @@ export const AdminViewUser = ({ searchParams, user }: Props) => {
       </div>
 
       <div>
-        <p className='text-lg font-bold'>{t("User Orders")}</p>
+        <p className="text-lg font-bold">{t("User Orders")}</p>
         <UserOrdersTable searchParams={searchParams} />
       </div>
     </div>

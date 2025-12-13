@@ -1,36 +1,36 @@
-"use client";
+"use client"
 
-import { useDefaultMutation } from "@/shared/hooks/useMutation";
-import { useTranslations } from "next-intl";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useDefaultMutation } from "@/shared/hooks/useMutation"
+import { useTranslations } from "next-intl"
+import { useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 
-import { updateSettingsAction } from "@/entities/settings/api/settings.api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { queryKeys } from "@/shared/config/query-keys";
-import { z } from "zod";
+import { updateSettingsAction } from "@/entities/settings/api/settings.api"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { queryKeys } from "@/shared/config/query-keys"
+import { z } from "zod"
 
-import { SelectField, TextField, TextareaField } from "@/shared/components/form/form";
-import { SettingsSchema } from "@/entities/settings/model/settings.schema";
-import { FileUploader } from "@/shared/components/form/file";
-import { Settings } from "@prisma/client";
-import { Button } from "@/shared/components/ui/button";
-import { Form } from "@/shared/components/ui/form";
-import { AllowedPaymentMethodsList, AnimationList } from "@/shared/config/defaults";
+import { SelectField, TextField, TextareaField } from "@/shared/components/form/form"
+import { SettingsSchema } from "@/entities/settings/model/settings.schema"
+import { FileUploader } from "@/shared/components/form/file"
+import { Settings } from "@prisma/client"
+import { Button } from "@/shared/components/ui/button"
+import { Form } from "@/shared/components/ui/form"
+import { AllowedPaymentMethodsList, AnimationList } from "@/shared/config/defaults"
 
 type TMut = {
-  data: z.infer<typeof SettingsSchema>;
-  logo: File | null;
-  defaultBanner: File | null;
-};
+  data: z.infer<typeof SettingsSchema>
+  logo: File | null
+  defaultBanner: File | null
+}
 
 export const SettingsForm = ({ settings }: { settings: Settings }) => {
-  const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
 
-  const t = useTranslations();
-  const qc = useQueryClient();
+  const t = useTranslations()
+  const qc = useQueryClient()
   const form = useForm({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
@@ -48,27 +48,25 @@ export const SettingsForm = ({ settings }: { settings: Settings }) => {
       defaultAnimation: settings.defaultAnimation || AnimationList[0],
       allowedPaymentMethod: settings.allowedPaymentMethod || AllowedPaymentMethodsList[0],
     },
-  });
-
-  console.log(settings);
+  })
 
   const mutation = useDefaultMutation({
     mutationFn: ({ data, logo, defaultBanner }: TMut) => updateSettingsAction(data, logo, defaultBanner),
     onSuccess: (data) => {
-      qc.invalidateQueries({ queryKey: queryKeys.settings.single(1) });
+      qc.invalidateQueries({ queryKey: queryKeys.settings.single(1) })
       if (data.status == 201) {
-        form.reset();
+        form.reset()
       }
     },
-  });
+  })
 
   const handleAction = (data: z.infer<typeof SettingsSchema>) => {
     mutation.mutate({
       data,
       logo: logoFile,
       defaultBanner: bannerFile,
-    });
-  };
+    })
+  }
 
   return (
     <Form {...form}>
@@ -143,7 +141,12 @@ export const SettingsForm = ({ settings }: { settings: Settings }) => {
             <p className="text-sm text-muted-foreground">{t("settings.payment.description")}</p>
           </div>
           <div className="col-span-5">
-            <SelectField name="allowedPaymentMethod" label={t("Allowed Payment Method")} control={form.control} options={AllowedPaymentMethodsList.map((method) => ({ label: method, value: method }))} />
+            <SelectField
+              name="allowedPaymentMethod"
+              label={t("Allowed Payment Method")}
+              control={form.control}
+              options={AllowedPaymentMethodsList.map((method) => ({ label: method, value: method }))}
+            />
           </div>
         </section>
 
@@ -154,5 +157,5 @@ export const SettingsForm = ({ settings }: { settings: Settings }) => {
         </section>
       </form>
     </Form>
-  );
-};
+  )
+}

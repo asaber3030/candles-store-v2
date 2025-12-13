@@ -33,7 +33,6 @@ class EmailService {
         html: options.html,
       });
 
-      console.log("Email sent:", info.messageId);
       return info;
     } catch (error) {
       console.error("Error sending email:", error);
